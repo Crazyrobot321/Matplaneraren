@@ -15,26 +15,6 @@ const MEAL_SLOTS = [
     { key: "dinner", label: "Dinner" }
 ];
 
-function isKnownDayKey(day) {
-    for (let i = 0; i < WEEK_DAYS.length; i++) {
-        if (WEEK_DAYS[i].key === day) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function isKnownMealSlotKey(slot) {
-    for (let i = 0; i < MEAL_SLOTS.length; i++) {
-        if (MEAL_SLOTS[i].key === slot) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function loadMealsFromStorage() {
     const stored = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!stored) {
@@ -42,47 +22,13 @@ function loadMealsFromStorage() {
     }
 
     try {
-        const parsed = JSON.parse(stored);
-        if (!Array.isArray(parsed)) {
-            return [];
-        }
-
-        const meals = [];
-
-        for (let i = 0; i < parsed.length; i++) {
-            const normalizedMeal = normalizeStoredMeal(parsed[i]);
-            if (normalizedMeal) {
-                meals.push(normalizedMeal);
-            }
-        }
-
-        return meals;
+        console.log("Loaded meals from storage: ", JSON.parse(stored));
+        return JSON.parse(stored);
     } catch {
+        console.error("Error parsing stored meals");
         return [];
     }
 }
-
-//This function takes a meal item retrieved from storage and ensures that it has the expected structure and valid values
-function normalizeStoredMeal(item) {
-
-    const day = isKnownDayKey(item.day) ? item.day : "monday";
-    const slot = isKnownMealSlotKey(item.slot) ? item.slot : "breakfast";
-    const title = String(item.title || item.name).trim();
-    let totalKcal = 0;
-
-    if (item.totalKcal !== undefined && item.totalKcal !== null) {
-        totalKcal = parseNumericValue(item.totalKcal);
-    } else {
-        totalKcal = parseNumericValue(item.kcal);
-    }
-
-    if (!title) {
-        return null;
-    }
-
-    return {day,slot,title,totalKcal};
-}
-
 
 //Builds the HTML structure for a days meal card
 function buildDayCard(day, mealMap) {

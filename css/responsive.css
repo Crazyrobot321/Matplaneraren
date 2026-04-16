@@ -1,0 +1,33 @@
+@media (max-width: 700px) {
+  .container {
+    padding: 12px;
+  }
+
+  .plannerBoard {
+    padding: 16px 10px 14px;
+    border-radius: 30px;
+  }
+
+  .dayRow {
+    grid-template-columns: 98px 1fr;
+    gap: 9px;
+  }
+
+  .mealType {
+    padding: 5px 4px;
+    font-size: 0.9rem;
+  }
+
+  .mealText {
+    font-size: 1.12rem;
+  }
+
+  .dayTab {
+    min-width: 150px;
+    font-size: 1rem;
+  }
+
+  .weekGrid {
+    grid-template-columns: 1fr;
+  }
+}

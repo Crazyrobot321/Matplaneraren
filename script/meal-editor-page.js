@@ -55,9 +55,9 @@ function initializeMealEditor() {
             titleInput.value = String(existingMeal.title).trim();
         }
         appState.currentMealIngredients = helpers.normalizeMealIngredients(existingMeal.ingredients);
-        alert("Du redigerar en befintlig rätt.");
         helpers.setDeleteButtonVisibility(true);
-    } else {
+    } 
+    else {
         if (titleInput) {
             titleInput.value = "";
         }
@@ -87,7 +87,7 @@ function addSelectedIngredientToMeal() {
     }
     if (!name || Number.isNaN(grams) || grams <= 0 || !nutrients.kcal) {
         alert("Välj ett livsmedel och ange gram för att lägga till ingrediens.");
-        console.log("Attempted to add ingredient with invalid values");
+        console.error("Attempted to add ingredient with invalid values");
         return;
     }
     //Finally add the ingredient to the current meal ingredients list in app state
@@ -103,7 +103,6 @@ function addSelectedIngredientToMeal() {
         salt: scaledValue(nutrients.salt, grams)
     });
     console.log("Added a new ingredient to the meal:", name, grams, "g");
-    alert(`Ingrediens tillagd i ${title}.`);
     helpers.renderIngredientList();
 }
 
@@ -137,16 +136,14 @@ function saveCurrentMeal() {
             updatedMeals.push(meal);
         }
     }
-
+    //Add the new or updated meal to the list of meals with all necessary properties
     updatedMeals.push({
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         day: appState.selectedDay,
         slot: appState.selectedSlot,
         title,
         ingredients,
         totalKcal: totals.kcal,
         totals,
-        createdAt: new Date().toISOString()
     });
 
     appState.mealItems = updatedMeals;
