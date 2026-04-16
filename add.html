@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lägg till måltid</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <main class="container">
+        <div class="headerRow">
+            <h1>Lägg till måltid</h1>
+            <a class="plusLink" href="index.html" aria-label="Tillbaka till översikt">←</a>
+        </div>
+
+        <section class="card">
+            <p id="mealContext" class="mealContext"></p>
+            <label for="mealTitleInput">Titel på rätten</label>
+            <input id="mealTitleInput" type="text" placeholder="Exempel: Kycklinggryta">
+            <p id="mealFormMessage" class="formMessage" aria-live="polite"></p>
+        </section>
+
+        <section class="card">
+            <label for="searchInput">Sök livsmedel</label>
+            <input id="searchInput" type="text" placeholder="Exempel: kyckling" oninput="searchFoods(this.value)">
+            <div id="results" class="results"></div>
+        </section>
+
+        <section id="selectedInfo" class="card" style="display:none;">
+            <h2 id="currentName"></h2>
+            <label for="weightInput">Gram</label>
+            <input type="number" id="weightInput" value="100" min="0">
+
+            <div class="nutritionList">
+                <p id="currentKcal"></p>
+                <p id="currentProtein"></p>
+                <p id="currentSugar"></p>
+                <p id="currentFat"></p>
+                <p id="currentCarbs"></p>
+                <p id="currentFiber"></p>
+                <p id="currentSalt"></p>
+            </div>
+
+            <div class="buttonRow">
+                <button type="button" onclick="addSelectedIngredientToMeal()">Lägg till ingrediens</button>
+                <button type="button" onclick="closeSelectedFoodPanel()">Stäng</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Ingredienser i rätten</h2>
+            <ul id="draftIngredientList"></ul>
+            <p id="draftNutrition"></p>
+            <div class="buttonRow">
+                <button type="button" onclick="saveCurrentMeal()">Spara rätt</button>
+                <button type="button" id="deleteMealButton" onclick="deleteCurrentMeal()" style="display:none;">Ta bort rätt</button>
+                <a class="buttonLink" href="index.html">Klar</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="script/app-state.js"></script>
+    <script src="script/nutrition-utils.js"></script>
+    <script src="script/food-data-service.js"></script>
+    <script src="script/meal-form-helpers.js"></script>
+    <script src="script/meal-editor-page.js"></script>
+</body>
+
+</html>
