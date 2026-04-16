@@ -76,7 +76,7 @@ async function searchFoods(term) {
         if (itemName.includes(searchTerm)) {
             results.push(item);
         }
-
+        //Max 30 resuls
         if (results.length >= 30) {
             break;
         }

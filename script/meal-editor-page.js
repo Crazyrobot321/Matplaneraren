@@ -123,6 +123,7 @@ function saveCurrentMeal() {
 
     if (ingredients.length === 0) {
         alert("Lägg till minst en ingrediens innan du sparar.");
+        console.error("Attempted to save meal without ingredients");
         return;
     }
 

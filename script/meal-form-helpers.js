@@ -139,7 +139,7 @@ function calculateNutrientTotals(ingredients) {
         totals.fiber += Number(ingredient.fiber);
         totals.salt += Number(ingredient.salt);
     }
-    console.log("Total nutrition: " + JSON.stringify(totals));
+    console.log("Total nutrition: ", totals);
     return totals;
 }
 
@@ -151,7 +151,7 @@ function renderIngredientList() {
     //If either the list element or the nutrition element is not found in the DOM, exit the function early
     if (!list || !nutrition) {
         alert("Ett oväntat fel inträffade. Försök att ladda om sidan.");
-        console.log("Render ingredient list failed: " + list, nutrition);
+        console.log("Render ingredient list failed: ", list, nutrition);
         return;
     }
 
