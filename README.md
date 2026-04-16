@@ -22,10 +22,6 @@ A simple and fast web app for planning weekly meals and getting a clear overview
 2. Open the project folder in VS Code
 3. Run it with any local server or open the start page directly in your browser
 
-## Status
-
-This project is under active development. Suggestions and improvements are welcome through issues and pull requests.
-
 ## License
 
 This project is free to use for learning and further development.
