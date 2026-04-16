@@ -35,9 +35,7 @@ function bindWeightInputPreview() {
 
     weightInput.addEventListener("input", function (event) {
         const grams = parseNumericValue(event.target.value);
-        if (Number.isFinite(grams)) {
-            renderNutritionPreview(grams);
-        }
+        renderNutritionPreview(grams);
     });
 }
 
@@ -81,17 +79,18 @@ function addSelectedIngredientToMeal() {
 
     if (!title) {
         helpers.showMealFormMessage("Sätt en titel på rätten innan du lägger till ingredienser.", true);
+        console.log("Attempted to add ingredient without meal title");
         if (titleInput) {
             titleInput.focus();
         }
         return;
     }
-
     if (!name || Number.isNaN(grams) || grams <= 0 || !nutrients.kcal) {
         helpers.showMealFormMessage("Välj ett livsmedel och ange gram för att lägga till ingrediens.", true);
+        console.log("Attempted to add ingredient with invalid values");
         return;
     }
-
+    //Finally add the ingredient to the current meal ingredients list in app state
     appState.currentMealIngredients.push({
         name,
         grams,
@@ -103,7 +102,7 @@ function addSelectedIngredientToMeal() {
         fiber: scaledValue(nutrients.fiber, grams),
         salt: scaledValue(nutrients.salt, grams)
     });
-
+    console.log("Added a new ingredient to the meal:", name, grams, "g");
     helpers.showMealFormMessage(`Ingrediens tillagd i ${title}.`, false);
     helpers.renderIngredientList();
 }
@@ -116,6 +115,7 @@ function saveCurrentMeal() {
 
     if (!title) {
         helpers.showMealFormMessage("Titel krävs för att spara rätten.", true);
+        console.log("Attempted to save meal without title");
         if (titleInput) {
             titleInput.focus();
         }

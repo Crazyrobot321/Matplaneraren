@@ -40,8 +40,11 @@ async function loadFoodCatalogData() {
     if (saved) {
         try {
             appState.livsmedelLista = JSON.parse(saved);
+            console.log("Loaded food data from cache");
+            return;
         } catch {
             appState.livsmedelLista = [];
+            console.log("Failed to parse cached food data, starting with empty list");
         }
     }
     // Then attempt to fetch fresh data, but don't clear cache on failure
@@ -50,8 +53,10 @@ async function loadFoodCatalogData() {
         const payload = await response.json();
         appState.livsmedelLista = Array.isArray(payload.livsmedel) ? payload.livsmedel : [];
         localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista));
+        console.log("Fetched and cached food data");
     } catch {
         // Keep cached data if request fails.
+        console.log("Failed to fetch fresh food data, keeping cached data.");
     }
 }
 
