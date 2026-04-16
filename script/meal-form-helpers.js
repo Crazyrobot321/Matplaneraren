@@ -114,7 +114,6 @@ function setDeleteButtonVisibility(show) {
     if (!deleteButton) {
         return;
     }
-    //if show is false, hide the delete button, otherwise make it visible
     deleteButton.style.display = show ? "inline-flex" : "none";
 }
 

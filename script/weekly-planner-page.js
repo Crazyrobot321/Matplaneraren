@@ -18,6 +18,7 @@ const MEAL_SLOTS = [
 function loadMealsFromStorage() {
     const stored = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!stored) {
+        console.warn("No meals found in storage");
         return [];
     }
 
