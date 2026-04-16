@@ -118,16 +118,6 @@ function setDeleteButtonVisibility(show) {
     deleteButton.style.display = show ? "inline-flex" : "none";
 }
 
-function showMealFormMessage(message, isError) {
-    const messageElement = document.getElementById("mealFormMessage");
-    if (!messageElement) {
-        return;
-    }
-
-    messageElement.textContent = message;
-    messageElement.classList.toggle("error", Boolean(isError));
-}
-
 function calculateNutrientTotals(ingredients) {
     const totals = {
         kcal: 0,
@@ -204,7 +194,6 @@ window.mealHelpers = {
     findMealForDayAndSlot,
     normalizeMealIngredients,
     setDeleteButtonVisibility,
-    showMealFormMessage,
     renderIngredientList,
     renderMealContextText,
     calculateNutrientTotals

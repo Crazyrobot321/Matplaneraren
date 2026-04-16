@@ -55,7 +55,7 @@ function initializeMealEditor() {
             titleInput.value = String(existingMeal.title).trim();
         }
         appState.currentMealIngredients = helpers.normalizeMealIngredients(existingMeal.ingredients);
-        helpers.showMealFormMessage("Du redigerar en befintlig rätt.", false);
+        alert("Du redigerar en befintlig rätt.");
         helpers.setDeleteButtonVisibility(true);
     } else {
         if (titleInput) {
@@ -78,7 +78,7 @@ function addSelectedIngredientToMeal() {
     const title = titleInput ? titleInput.value.trim() : "";
 
     if (!title) {
-        helpers.showMealFormMessage("Sätt en titel på rätten innan du lägger till ingredienser.", true);
+        alert("Sätt en titel på rätten innan du lägger till ingredienser.");
         console.log("Attempted to add ingredient without meal title");
         if (titleInput) {
             titleInput.focus();
@@ -86,7 +86,7 @@ function addSelectedIngredientToMeal() {
         return;
     }
     if (!name || Number.isNaN(grams) || grams <= 0 || !nutrients.kcal) {
-        helpers.showMealFormMessage("Välj ett livsmedel och ange gram för att lägga till ingrediens.", true);
+        alert("Välj ett livsmedel och ange gram för att lägga till ingrediens.");
         console.log("Attempted to add ingredient with invalid values");
         return;
     }
@@ -103,7 +103,7 @@ function addSelectedIngredientToMeal() {
         salt: scaledValue(nutrients.salt, grams)
     });
     console.log("Added a new ingredient to the meal:", name, grams, "g");
-    helpers.showMealFormMessage(`Ingrediens tillagd i ${title}.`, false);
+    alert(`Ingrediens tillagd i ${title}.`);
     helpers.renderIngredientList();
 }
 
@@ -114,7 +114,7 @@ function saveCurrentMeal() {
     const ingredients = appState.currentMealIngredients || [];
 
     if (!title) {
-        helpers.showMealFormMessage("Titel krävs för att spara rätten.", true);
+        alert("Titel krävs för att spara rätten.");
         console.log("Attempted to save meal without title");
         if (titleInput) {
             titleInput.focus();
@@ -123,7 +123,7 @@ function saveCurrentMeal() {
     }
 
     if (ingredients.length === 0) {
-        helpers.showMealFormMessage("Lägg till minst en ingrediens innan du sparar.", true);
+        alert("Lägg till minst en ingrediens innan du sparar.");
         return;
     }
 
@@ -159,7 +159,7 @@ function saveCurrentMeal() {
 
     helpers.renderIngredientList();
     helpers.setDeleteButtonVisibility(true);
-    helpers.showMealFormMessage("Rätten sparad. Du kan nu gå tillbaka till översikten.", false);
+    alert("Rätten sparad. Du kan nu gå tillbaka till översikten.");
 }
 
 function deleteCurrentMeal() {
@@ -185,7 +185,7 @@ function deleteCurrentMeal() {
 
     helpers.renderIngredientList();
     helpers.setDeleteButtonVisibility(false);
-    helpers.showMealFormMessage("Rätten togs bort från denna slot.", false);
+    alert("Rätten togs bort från denna slot.");
 }
 
 function closeSelectedFoodPanel() {
