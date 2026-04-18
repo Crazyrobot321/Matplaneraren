@@ -1,6 +1,5 @@
-
-//Centralized collection of application state variables. This object is used to store and manage the state of the application,
-//including the list of food items, selected nutrients, meal items, and other relevant data
+//Global app state shared across pages and modules.
+//Attached to window so it is available everywhere in the browser runtime.
 window.appState = {
     livsmedelLista: [],
     baseURL: "https://dataportal.livsmedelsverket.se/livsmedel",
@@ -16,6 +15,6 @@ window.appState = {
     selectedName: "",
     mealItems: [],
     currentMealIngredients: [],
-    selectedDay: "monday",
-    selectedSlot: "breakfast"
+    selectedDay: "monday", //Default selected day
+    selectedSlot: "breakfast" //Default selected slot
 };

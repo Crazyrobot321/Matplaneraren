@@ -1,8 +1,8 @@
-function findNutrientByName(itemData, text) {
+function findNutrientByProperty(itemData, propertyName, text) {
     for (let i = 0; i < itemData.length; i++) {
         const nutrient = itemData[i];
-        const nutrientName = String(nutrient.namn);
-        if (nutrientName.includes(text)) {
+        const propertyValue = String(nutrient[propertyName]);
+        if (propertyValue.includes(text)) {
             return nutrient;
         }
     }
@@ -10,26 +10,30 @@ function findNutrientByName(itemData, text) {
     return null;
 }
 
-function findNutrientByCode(itemData, code) {
-    for (let i = 0; i < itemData.length; i++) {
-        const nutrient = itemData[i];
-        const euroCode = String(nutrient.euroFIRkod);
-        if (euroCode.includes(code)) {
-            return nutrient;
-        }
-    }
+function findNutrientByName(itemData, text) {
+    return findNutrientByProperty(itemData, "namn", text);
+}
 
-    return null;
+function findNutrientByCode(itemData, code) {
+    return findNutrientByProperty(itemData, "euroFIRkod", code);
 }
 
 function assignSelectedNutrients(itemData, appState) {
     appState.selectedNutrients.kcal = findNutrientByName(itemData, "Energi (kcal)"); //Find by name due to Energi Kj have same code as kcal, and we want kcal
-    appState.selectedNutrients.protein = findNutrientByCode(itemData, "PROT");
-    appState.selectedNutrients.sugar = findNutrientByCode(itemData, "SUGAR");
-    appState.selectedNutrients.fat = findNutrientByCode(itemData, "FAT");
-    appState.selectedNutrients.carbs = findNutrientByCode(itemData, "CHO");
-    appState.selectedNutrients.fiber = findNutrientByCode(itemData, "FIB");
-    appState.selectedNutrients.salt = findNutrientByCode(itemData, "NACL");
+
+    const nutrientMappings = [
+        { key: "protein", code: "PROT" },
+        { key: "sugar", code: "SUGAR" },
+        { key: "fat", code: "FAT" },
+        { key: "carbs", code: "CHO" },
+        { key: "fiber", code: "FIB" },
+        { key: "salt", code: "NACL" }
+    ];
+
+    for (let i = 0; i < nutrientMappings.length; i++) {
+        const nutrient = nutrientMappings[i];
+        appState.selectedNutrients[nutrient.key] = findNutrientByCode(itemData, nutrient.code);
+    }
 }
 
 async function loadFoodCatalogData() {
@@ -69,20 +73,17 @@ async function searchFoods(term) {
 
 
     const results = [];
-    for (let i = 0; i < appState.livsmedelLista.length; i++) {
+    for (let i = 0; i < appState.livsmedelLista.length && results.length < 30; i++) {
         const item = appState.livsmedelLista[i];
         const itemName = String(item.namn).toLowerCase();
 
         if (itemName.includes(searchTerm)) {
             results.push(item);
         }
-        //Max 30 resuls
-        if (results.length >= 30) {
-            break;
-        }
     }
 
-    for (let i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i++) { //Loops through search results and creates a div for each result, 
+        //with an event listener that fetches detailed info about the food item when clicked, and updates the app state and UI accordingly
         const item = results[i];
         const div = document.createElement("div");
         div.className = "resultItem";
@@ -99,12 +100,12 @@ async function searchFoods(term) {
 
             const grams = parseNumericValue(document.getElementById("weightInput").value);
             renderNutritionPreview(grams);
-            document.getElementById("selectedInfo").style.display = "block";
+            document.getElementById("selectedInfo").classList.remove("hidden");
         });
 
         resultsElement.appendChild(div);
     }
 }
 
-window.searchFoods = searchFoods;
-window.loadFoodCatalogData = loadFoodCatalogData;
+window.searchFoods = searchFoods; //Make searchFoods globally accessible so it can be called from other scirpts
+window.loadFoodCatalogData = loadFoodCatalogData; //Make loadFoodCatalogData globally accessible so it can be called from other scripts

@@ -21,49 +21,44 @@ const SLOT_LABELS = {
 //For example, if the URL is "add.html?day=monday&slot=breakfast", 
 //then query.get("day") will return "monday" and query.get("slot") will return "breakfast"
 function readMealContextFromQueryParams() {
-    const query = new URLSearchParams(window.location.search); 
+    const query = new URLSearchParams(window.location.search);
     const day = query.get("day");
     const slot = query.get("slot");
 
-    return { //Returns an object containing the day and slot values extracted from the query string
-        day: day,
-        slot: slot
-    };
+    return { day, slot };
 }
 
 function readMealsFromStorage() {
-    const storedItems = localStorage.getItem(MEAL_STORAGE_KEY); // Retrieves the stored meal items from localStorage using the defined key
+    const storedItems = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!storedItems) {
-        return []; //If there are no stored items, return an empty array and exit the function
+        return [];
     }
 
     try {
-        const parsed = JSON.parse(storedItems);
-        return parsed;
+        return JSON.parse(storedItems);
     } catch {
         return [];
     }
 }
 
 function writeMealsToStorage(items) {
-    localStorage.setItem(MEAL_STORAGE_KEY, JSON.stringify(items)); //Converts the provided items array into a JSON string and stores it in localStorage under the defined key
+    localStorage.setItem(MEAL_STORAGE_KEY, JSON.stringify(items));
+}
+
+function getLabelFromKey(labels, key, fallbackKey) {
+    if (labels[key]) {
+        return labels[key];
+    }
+
+    return labels[fallbackKey];
 }
 
 function getDayLabelFromKey(dayKey) {
-    //If the provided dayKey exists in the DAY_LABELS object, return the corresponding label; otherwise, return the label for "monday" as a default
-    if (DAY_LABELS[dayKey]) {
-        return DAY_LABELS[dayKey];
-    }
-
-    return DAY_LABELS.monday;
+    return getLabelFromKey(DAY_LABELS, dayKey, "monday");
 }
 
 function getSlotLabelFromKey(slotKey) {
-    if (SLOT_LABELS[slotKey]) {
-        return SLOT_LABELS[slotKey];
-    }
-
-    return SLOT_LABELS.breakfast;
+    return getLabelFromKey(SLOT_LABELS, slotKey, "breakfast");
 }
 
 function normalizeMealIngredients(ingredients) {
@@ -80,7 +75,7 @@ function normalizeMealIngredients(ingredients) {
         if (!name) {
             continue;
         }
-        //Push the nuutritional information of the ingredient into the normalized array, converting all values to numbers using the toNumber function
+
         normalized.push({
             name,
             grams: Number(ingredient.grams),
@@ -100,12 +95,11 @@ function normalizeMealIngredients(ingredients) {
 function findMealForDayAndSlot(meals, day, slot) {
     for (let i = 0; i < meals.length; i++) {
         const meal = meals[i];
-        //If the current meal's day and slot match the provided day and slot, return that meal
         if (meal.day === day && meal.slot === slot) {
             return meal;
         }
     }
-    //Return null if no meal is found that matches the provided day and slot
+
     return null;
 }
 
@@ -114,7 +108,8 @@ function setDeleteButtonVisibility(show) {
     if (!deleteButton) {
         return;
     }
-    deleteButton.style.display = show ? "inline-flex" : "none";
+
+    deleteButton.classList.toggle("hidden", !show);
 }
 
 function calculateNutrientTotals(ingredients) {

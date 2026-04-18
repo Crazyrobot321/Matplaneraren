@@ -28,7 +28,7 @@
             <div id="results" class="results"></div>
         </section>
 
-        <section id="selectedInfo" class="card" style="display:none;">
+        <section id="selectedInfo" class="card hidden">
             <h2 id="currentName"></h2>
             <label for="weightInput">Gram</label>
             <input type="number" id="weightInput" value="100" min="0">
@@ -55,7 +55,7 @@
             <p id="draftNutrition"></p>
             <div class="buttonRow">
                 <button type="button" onclick="saveCurrentMeal()">Spara rätt</button>
-                <button type="button" id="deleteMealButton" onclick="deleteCurrentMeal()" style="display:none;">Ta bort rätt</button>
+                <button type="button" id="deleteMealButton" class="hidden" onclick="deleteCurrentMeal()">Ta bort rätt</button>
                 <a class="buttonLink" href="index.html">Klar</a>
             </div>
         </section>

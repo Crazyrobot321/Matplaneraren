@@ -15,6 +15,10 @@ const MEAL_SLOTS = [
     { key: "dinner", label: "Dinner" }
 ];
 
+function buildMealEditorHref(dayKey, slotKey) {
+    return `add.html?day=${dayKey}&slot=${slotKey}`;
+}
+
 function loadMealsFromStorage() {
     const stored = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!stored) {
@@ -23,8 +27,9 @@ function loadMealsFromStorage() {
     }
 
     try {
-        console.log("Loaded meals from storage: ", JSON.parse(stored));
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        console.log("Loaded meals from storage: ", parsed);
+        return parsed;
     } catch {
         console.error("Error parsing stored meals");
         return [];
@@ -51,23 +56,20 @@ function buildDayCard(day, mealMap) {
         const mealTypeLabel = document.createElement("span");
         mealTypeLabel.className = "mealType";
         mealTypeLabel.textContent = slot.label;
+        mealRow.appendChild(mealTypeLabel);
 
         const mealEntry = mealMap[`${day.key}:${slot.key}`];
+        const mealLink = document.createElement("a");
+        mealLink.href = buildMealEditorHref(day.key, slot.key);
+
         if (mealEntry) {
-            const mealLink = document.createElement("a");
             mealLink.className = "mealText mealLink";
-            mealLink.href = `add.html?day=${day.key}&slot=${slot.key}`;
             mealLink.textContent = `${mealEntry.title} (${formatValue(mealEntry.totalKcal)} kcal)`;
-            mealRow.appendChild(mealTypeLabel);
-            mealRow.appendChild(mealLink);
         } else {
-            const addMealLink = document.createElement("a");
-            addMealLink.className = "mealText addMealLink";
-            addMealLink.href = `add.html?day=${day.key}&slot=${slot.key}`;
-            addMealLink.textContent = "Add meal";
-            mealRow.appendChild(mealTypeLabel);
-            mealRow.appendChild(addMealLink);
+            mealLink.className = "mealText addMealLink";
+            mealLink.textContent = "Add meal";
         }
+        mealRow.appendChild(mealLink);
 
         mealList.appendChild(mealRow);
     }
@@ -101,7 +103,7 @@ function renderWeeklyMealBoard() {
     if (totalNutrition) {
         let totalKcal = 0;
         for (let i = 0; i < items.length; i++) {
-            totalKcal += items[i].totalKcal;
+            totalKcal += Number(items[i].totalKcal || 0);
         }
 
         totalNutrition.innerHTML = `<strong>Total: ${formatValue(totalKcal)} kcal</strong>`;

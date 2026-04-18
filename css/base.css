@@ -60,6 +60,14 @@ button,
   font-weight: 700;
 }
 
+.hidden {
+  display: none;
+}
+
+#deleteMealButton:not(.hidden) {
+  display: inline-flex;
+}
+
 button:hover,
 .plusLink:hover,
 .buttonLink:hover {

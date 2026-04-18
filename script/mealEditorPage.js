@@ -1,33 +1,63 @@
 const helpers = window.mealHelpers;
 
-function renderNutritionPreview(grams) {
-    const nutrients = window.appState.selectedNutrients;
-    const kcalValue = scaledValue(nutrients.kcal, grams);
-    const proteinValue = scaledValue(nutrients.protein, grams);
-    const sugarValue = scaledValue(nutrients.sugar, grams);
-    const fatValue = scaledValue(nutrients.fat, grams);
-    const carbsValue = scaledValue(nutrients.carbs, grams);
-    const fiberValue = scaledValue(nutrients.fiber, grams);
-    const saltValue = scaledValue(nutrients.salt, grams);
+const NUTRIENT_FIELDS = [
+    { key: "kcal", label: "Kcal", elementId: "currentKcal", unit: "" },
+    { key: "protein", label: "Protein", elementId: "currentProtein", unit: " g" },
+    { key: "sugar", label: "Socker", elementId: "currentSugar", unit: " g" },
+    { key: "fat", label: "Fett", elementId: "currentFat", unit: " g" },
+    { key: "carbs", label: "Kolhydrater", elementId: "currentCarbs", unit: " g" },
+    { key: "fiber", label: "Fiber", elementId: "currentFiber", unit: " g" },
+    { key: "salt", label: "Salt", elementId: "currentSalt", unit: " g" }
+];
 
-    const currentKcal = document.getElementById("currentKcal");
-    const currentProtein = document.getElementById("currentProtein");
-    const currentSugar = document.getElementById("currentSugar");
-    const currentFat = document.getElementById("currentFat");
-    const currentCarbs = document.getElementById("currentCarbs");
-    const currentFiber = document.getElementById("currentFiber");
-    const currentSalt = document.getElementById("currentSalt");
+function setNutritionPreviewText(elementId, label, value, unit) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        return;
+    }
 
-    currentKcal.textContent = `Kcal: ${formatValue(kcalValue)}`;
-    currentProtein.textContent = `Protein: ${formatValue(proteinValue)} g`;
-    currentSugar.textContent = `Socker: ${formatValue(sugarValue)} g`;
-    currentFat.textContent = `Fett: ${formatValue(fatValue)} g`;
-    currentCarbs.textContent = `Kolhydrater: ${formatValue(carbsValue)} g`;
-    currentFiber.textContent = `Fiber: ${formatValue(fiberValue)} g`;
-    currentSalt.textContent = `Salt: ${formatValue(saltValue)} g`;
+    element.textContent = `${label}: ${formatValue(value)}${unit || ""}`;
 }
 
-function bindWeightInputPreview() {
+function removeCurrentSlotMeal(existingMeals, selectedDay, selectedSlot) {
+    const updatedMeals = [];
+
+    for (let i = 0; i < existingMeals.length; i++) {
+        const meal = existingMeals[i];
+        if (!(meal.day === selectedDay && meal.slot === selectedSlot)) {
+            updatedMeals.push(meal);
+        }
+    }
+
+    return updatedMeals;
+}
+
+function renderNutritionPreview(grams) {
+    const nutrients = window.appState.selectedNutrients;
+
+    for (let i = 0; i < NUTRIENT_FIELDS.length; i++) {
+        const field = NUTRIENT_FIELDS[i];
+        const value = scaledValue(nutrients[field.key], grams);
+        setNutritionPreviewText(field.elementId, field.label, value, field.unit);
+    }
+}
+
+function buildIngredient(name, grams, nutrients) {
+    const ingredient = {
+        name,
+        grams
+    };
+
+    for (let i = 0; i < NUTRIENT_FIELDS.length; i++) {
+        const field = NUTRIENT_FIELDS[i];
+        ingredient[field.key] = scaledValue(nutrients[field.key], grams);
+    }
+
+    return ingredient;
+}
+
+//Preview of nutrition values based on the current weight input
+function previewWeightInput() {
     const weightInput = document.getElementById("weightInput");
     if (!weightInput) {
         return;
@@ -91,17 +121,7 @@ function addSelectedIngredientToMeal() {
         return;
     }
     //Finally add the ingredient to the current meal ingredients list in app state
-    appState.currentMealIngredients.push({
-        name,
-        grams,
-        kcal: scaledValue(nutrients.kcal, grams),
-        protein: scaledValue(nutrients.protein, grams),
-        sugar: scaledValue(nutrients.sugar, grams),
-        fat: scaledValue(nutrients.fat, grams),
-        carbs: scaledValue(nutrients.carbs, grams),
-        fiber: scaledValue(nutrients.fiber, grams),
-        salt: scaledValue(nutrients.salt, grams)
-    });
+    appState.currentMealIngredients.push(buildIngredient(name, grams, nutrients));
     console.log("Added a new ingredient to the meal:", name, grams, "g");
     helpers.renderIngredientList();
 }
@@ -129,14 +149,7 @@ function saveCurrentMeal() {
 
     const totals = helpers.calculateNutrientTotals(ingredients);
     const existingMeals = helpers.readMealsFromStorage();
-    const updatedMeals = [];
-
-    for (let i = 0; i < existingMeals.length; i++) {
-        const meal = existingMeals[i];
-        if (!(meal.day === appState.selectedDay && meal.slot === appState.selectedSlot)) {
-            updatedMeals.push(meal);
-        }
-    }
+    const updatedMeals = removeCurrentSlotMeal(existingMeals, appState.selectedDay, appState.selectedSlot);
     //Add the new or updated meal to the list of meals with all necessary properties
     updatedMeals.push({
         day: appState.selectedDay,
@@ -164,14 +177,7 @@ function deleteCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
     const existingMeals = helpers.readMealsFromStorage();
-    const updatedMeals = [];
-
-    for (let i = 0; i < existingMeals.length; i++) {
-        const meal = existingMeals[i];
-        if (!(meal.day === appState.selectedDay && meal.slot === appState.selectedSlot)) {
-            updatedMeals.push(meal);
-        }
-    }
+    const updatedMeals = removeCurrentSlotMeal(existingMeals, appState.selectedDay, appState.selectedSlot);
 
     appState.mealItems = updatedMeals;
     appState.currentMealIngredients = [];
@@ -189,7 +195,7 @@ function deleteCurrentMeal() {
 function closeSelectedFoodPanel() {
     const selectedInfo = document.getElementById("selectedInfo");
     if (selectedInfo) {
-        selectedInfo.style.display = "none";
+        selectedInfo.classList.add("hidden");
     }
 }
 
@@ -199,6 +205,6 @@ window.saveCurrentMeal = saveCurrentMeal;
 window.deleteCurrentMeal = deleteCurrentMeal;
 window.closeSelectedFoodPanel = closeSelectedFoodPanel;
 
-bindWeightInputPreview();
+previewWeightInput();
 loadFoodCatalogData();
 initializeMealEditor();
