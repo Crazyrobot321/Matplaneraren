@@ -40,7 +40,7 @@ async function loadFoodCatalogData() {
     const appState = window.appState;
     const saved = localStorage.getItem("livsmedel");
 
-    // Try to load cached data first 
+    // Try to load cached data from local storage first
     if (saved) {
         try {
             appState.livsmedelLista = JSON.parse(saved);
@@ -56,7 +56,7 @@ async function loadFoodCatalogData() {
         const response = await fetch(`${appState.baseURL}/api/v1/livsmedel?offset=0&limit=3000&sprak=1`);
         const payload = await response.json();
         appState.livsmedelLista = Array.isArray(payload.livsmedel) ? payload.livsmedel : [];
-        localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista));
+        localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista)); // Add all livsmedel to local storage for caching
         console.log("Fetched and cached food data");
     } catch {
         // Keep cached data if request fails.
