@@ -14,7 +14,7 @@ A simple and fast web app for planning weekly meals and getting a clear overview
 
 - HTML
 - CSS
-- JavaScript (Vanilla)
+- JavaScript
 
 ## Getting Started
 
