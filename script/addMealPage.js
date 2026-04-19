@@ -72,8 +72,8 @@ function previewWeightInput() {
         renderNutritionPreview(grams);
     });
 }
-// Initializes editor state from query params and storage
-function initializeMealEditor() {
+// Initializes add meal page state from query params and storage
+function initializeAddMealPage() {
     const appState = window.appState;
     const context = helpers.readMealContextFromQueryParams();
     const titleInput = document.getElementById("mealTitleInput");
@@ -207,7 +207,7 @@ function closeSelectedFoodPanel() {
     }
 }
 
-window.initializeMealEditor = initializeMealEditor;
+window.initializeAddMealPage = initializeAddMealPage;
 window.addSelectedIngredientToMeal = addSelectedIngredientToMeal;
 window.saveCurrentMeal = saveCurrentMeal;
 window.deleteCurrentMeal = deleteCurrentMeal;
@@ -215,4 +215,4 @@ window.closeSelectedFoodPanel = closeSelectedFoodPanel;
 
 previewWeightInput();
 loadFoodCatalogData();
-initializeMealEditor();
+initializeAddMealPage();

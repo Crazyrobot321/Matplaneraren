@@ -15,8 +15,8 @@ const MEAL_SLOTS = [
     { key: "dinner", label: "Dinner" }
 ];
 
-// Builds link to meal editor for one day and slot
-function buildMealEditorHref(dayKey, slotKey) {
+// Builds link to add meal page for one day and slot
+function buildAddMealPageHref(dayKey, slotKey) {
     return `add.html?day=${dayKey}&slot=${slotKey}`;
 }
 
@@ -62,7 +62,7 @@ function buildDayCard(day, mealMap) {
 
         const mealEntry = mealMap[`${day.key}:${slot.key}`];
         const mealLink = document.createElement("a");
-        mealLink.href = buildMealEditorHref(day.key, slot.key);
+        mealLink.href = buildAddMealPageHref(day.key, slot.key);
 
         if (mealEntry) {
             mealLink.className = "mealText mealLink";
