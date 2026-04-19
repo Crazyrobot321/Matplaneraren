@@ -4,22 +4,21 @@
 
 .plannerBoard {
   padding: 22px 18px 18px;
-  border: 2px solid rgba(94, 126, 167, 0.35);
+  border: 2px solid #35bcb5;
   border-radius: 52px;
-  background: #eef4fb;
-  box-shadow: 0 14px 28px rgba(68, 92, 125, 0.14);
+  background: #d7faf6;
 }
 
 .plannerTitle {
   margin: 6px 0 18px;
   text-align: center;
-  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-size: 2.3rem;
   letter-spacing: 0.6px;
 }
 
 .weekGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
 
@@ -27,9 +26,14 @@
   position: relative;
   margin-top: 34px;
   padding: 42px 14px 16px;
-  border: 2px solid rgba(94, 126, 167, 0.5);
+  border: 2px solid #dc6b9d;
   border-radius: 14px;
-  background: #e4edf8;
+  background: #ffd4e2;
+  color: #238ea5;
+}
+
+.dayCard:hover {
+  background: #ffec8f;
 }
 
 .dayTab {
@@ -44,9 +48,9 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 1.25rem;
-  border: 2px solid rgba(94, 126, 167, 0.5);
+  border: 2px solid #35bcb5;
   border-radius: 3px;
-  background: #c3d7ef;
+  background: #b8f0ea;
 }
 
 .dayList {
@@ -66,12 +70,13 @@
 
 .mealType {
   padding: 6px 10px;
-  border: 2px solid rgba(94, 126, 167, 0.45);
+  border: 2px solid #dc6b9d;
   border-radius: 2px;
-  background: #d2e2f5;
+  background: #ffc0d4;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
+  color: #238ea5;
   text-align: center;
 }
 
@@ -79,10 +84,12 @@
   padding-top: 3px;
   font-size: 1.4rem;
   line-height: 1.2;
+  color: #238ea5;
 }
 
 .plannerTotal {
   margin: 18px 0 6px;
   text-align: right;
   font-size: 1.45rem;
+  color: #3f5254;
 }

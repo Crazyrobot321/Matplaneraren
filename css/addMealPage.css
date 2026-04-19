@@ -8,21 +8,25 @@
 .card {
   margin-bottom: 16px;
   padding: 16px;
-  border: 1px solid rgba(147, 174, 208, 0.85);
+  border: 1px solid #dc6b9d;
   border-radius: 10px;
-  background: #f2f7fd;
+  background: #ffd4e2;
+  color: #238ea5;
+}
+
+.card:hover {
+  background: #ffec8f;
 }
 
 .mealContext {
   margin: 0 0 10px;
-  color: black;
   font-size: 1.05rem;
 }
 
 .formMessage {
   margin: 8px 0 0;
   min-height: 1.3em;
-  color: black;
+  color: #6f2a47;
 }
 
 #draftIngredientList {
@@ -42,9 +46,9 @@
 .results {
   max-height: 220px;
   overflow-y: auto;
-  border: 1px solid #b8cde4;
+  border: 1px solid #35bcb5;
   border-radius: 6px;
-  background: #eef6ff;
+  background: #effffb;
 }
 
 .resultItem {
@@ -54,7 +58,7 @@
 }
 
 .resultItem:hover {
-  background: #dbe8f7;
+  background: #ffec8f;
 }
 
 .nutritionList p {

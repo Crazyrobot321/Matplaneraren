@@ -5,8 +5,8 @@
 body {
   margin: 0;
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  color: black;
-  background: bisque;
+  color: #2f2a2a;
+  background: #ffec8f;
 }
 
 .container {
@@ -30,10 +30,10 @@ input {
   width: 100%;
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #a7bdd8;
+  border: 1px solid #35bcb5;
   border-radius: 6px;
   font: inherit;
-  background: #f9fcff;
+  background: #ffffff;
 }
 
 button,
@@ -45,10 +45,10 @@ button,
   min-width: 38px;
   min-height: 38px;
   padding: 8px 12px;
-  border: 1px solid #7e9fc6;
+  border: 1px solid #35bcb5;
   border-radius: 6px;
-  background: #e3eefb;
-  color: black;
+  background: #c6f5f1;
+  color: #2f2a2a;
   text-decoration: none;
   cursor: pointer;
   font: inherit;
@@ -64,19 +64,15 @@ button,
   display: none;
 }
 
-#deleteMealButton:not(.hidden) {
-  display: inline-flex;
-}
-
 button:hover,
 .plusLink:hover,
 .buttonLink:hover {
-  background: #cfe0f3;
+  background: #ffec8f;
 }
 
 .mealLink,
 .addMealLink {
-  color: black;
+  color: #26484a;
   text-decoration: none;
 }
 
