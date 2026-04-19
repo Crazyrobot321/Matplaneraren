@@ -16,10 +16,7 @@ const SLOT_LABELS = {
     snack: "Snack",
     dinner: "Dinner"
 };
-//URLSearchParams is used to parse the query string from the URL, 
-//which contains the parameters passed to the page
-//For example, if the URL is "add.html?day=monday&slot=breakfast", 
-//then query.get("day") will return "monday" and query.get("slot") will return "breakfast"
+// Reads selected day and slot from URL query params
 function readMealContextFromQueryParams() {
     const query = new URLSearchParams(window.location.search);
     const day = query.get("day");
@@ -28,6 +25,7 @@ function readMealContextFromQueryParams() {
     return { day, slot };
 }
 
+// Loads saved meals from localStorage
 function readMealsFromStorage() {
     const storedItems = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!storedItems) {
@@ -41,10 +39,12 @@ function readMealsFromStorage() {
     }
 }
 
+// Saves meals to localStorage
 function writeMealsToStorage(items) {
     localStorage.setItem(MEAL_STORAGE_KEY, JSON.stringify(items));
 }
 
+// Returns label by key with a fallback
 function getLabelFromKey(labels, key, fallbackKey) {
     if (labels[key]) {
         return labels[key];
@@ -53,14 +53,17 @@ function getLabelFromKey(labels, key, fallbackKey) {
     return labels[fallbackKey];
 }
 
+// Gets a display label for a day key
 function getDayLabelFromKey(dayKey) {
     return getLabelFromKey(DAY_LABELS, dayKey, "monday");
 }
 
+// Gets a display label for a slot key
 function getSlotLabelFromKey(slotKey) {
     return getLabelFromKey(SLOT_LABELS, slotKey, "breakfast");
 }
 
+// Normalizes ingredient values to numeric fields
 function normalizeMealIngredients(ingredients) {
     if (!Array.isArray(ingredients)) {
         return [];
@@ -92,6 +95,7 @@ function normalizeMealIngredients(ingredients) {
     return normalized;
 }
 
+// Finds a meal for a specific day and slot
 function findMealForDayAndSlot(meals, day, slot) {
     for (let i = 0; i < meals.length; i++) {
         const meal = meals[i];
@@ -103,6 +107,7 @@ function findMealForDayAndSlot(meals, day, slot) {
     return null;
 }
 
+// Shows or hides the delete meal button
 function setDeleteButtonVisibility(show) {
     const deleteButton = document.getElementById("deleteMealButton");
     if (!deleteButton) {
@@ -112,6 +117,7 @@ function setDeleteButtonVisibility(show) {
     deleteButton.classList.toggle("hidden", !show);
 }
 
+// Sums nutrient totals for all ingredients
 function calculateNutrientTotals(ingredients) {
     const totals = {
         kcal: 0,
@@ -137,6 +143,7 @@ function calculateNutrientTotals(ingredients) {
     return totals;
 }
 
+// Renders current ingredient list and summary
 function renderIngredientList() {
     const appState = window.appState;
     const list = document.getElementById("draftIngredientList");
@@ -168,9 +175,11 @@ function renderIngredientList() {
     }
 
     const totals = calculateNutrientTotals(ingredients);
-    nutrition.textContent = `Summa: ${formatValue(totals.kcal)} kcal | Protein ${formatValue(totals.protein)} g | Kolhydrater ${formatValue(totals.carbs)} g | Fett ${formatValue(totals.fat)} g`;
+    nutrition.textContent = `Summa: ${formatValue(totals.kcal)} kcal | Protein ${formatValue(totals.protein)} g | Kolhydrater ${formatValue(totals.carbs)} g 
+    | Fett ${formatValue(totals.fat)} g | Fiber ${formatValue(totals.fiber)} g | Socker ${formatValue(totals.sugar)} g | Salt ${formatValue(totals.salt)} g`;
 }
 
+// Renders the current day and slot context text
 function renderMealContextText() {
     const appState = window.appState;
     const contextElement = document.getElementById("mealContext");

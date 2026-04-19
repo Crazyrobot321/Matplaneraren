@@ -15,10 +15,12 @@ const MEAL_SLOTS = [
     { key: "dinner", label: "Dinner" }
 ];
 
+// Builds link to meal editor for one day and slot
 function buildMealEditorHref(dayKey, slotKey) {
     return `add.html?day=${dayKey}&slot=${slotKey}`;
 }
 
+// Loads planned meals from localStorage
 function loadMealsFromStorage() {
     const stored = localStorage.getItem(MEAL_STORAGE_KEY);
     if (!stored) {
@@ -36,7 +38,7 @@ function loadMealsFromStorage() {
     }
 }
 
-//Builds the HTML structure for a days meal card
+// Builds the meal card UI for one day
 function buildDayCard(day, mealMap) {
     const card = document.createElement("article");
     card.className = "dayCard";
@@ -79,11 +81,11 @@ function buildDayCard(day, mealMap) {
     return card;
 }
 
+// Renders weekly board
 function renderWeeklyMealBoard() {
     const items = loadMealsFromStorage();
     const mealMap = {};
     const weekGrid = document.getElementById("weekGrid");
-    const totalNutrition = document.getElementById("totalNutrition");
 
     if (!weekGrid) {
         return;
@@ -98,15 +100,6 @@ function renderWeeklyMealBoard() {
     for (let i = 0; i < WEEK_DAYS.length; i++) {
         const day = WEEK_DAYS[i];
         weekGrid.appendChild(buildDayCard(day, mealMap));
-    }
-
-    if (totalNutrition) {
-        let totalKcal = 0;
-        for (let i = 0; i < items.length; i++) {
-            totalKcal += Number(items[i].totalKcal || 0);
-        }
-
-        totalNutrition.innerHTML = `<strong>Total: ${formatValue(totalKcal)} kcal</strong>`;
     }
 }
 

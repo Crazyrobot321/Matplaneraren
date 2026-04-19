@@ -1,3 +1,4 @@
+// Finds first nutrient where a property contains text
 function findNutrientByProperty(itemData, propertyName, text) {
     for (let i = 0; i < itemData.length; i++) {
         const nutrient = itemData[i];
@@ -10,14 +11,17 @@ function findNutrientByProperty(itemData, propertyName, text) {
     return null;
 }
 
+// Finds nutrient by name
 function findNutrientByName(itemData, text) {
     return findNutrientByProperty(itemData, "namn", text);
 }
 
+// Finds nutrient by EuroFIR code
 function findNutrientByCode(itemData, code) {
     return findNutrientByProperty(itemData, "euroFIRkod", code);
 }
 
+// Maps selected nutrients from item details to app state
 function assignSelectedNutrients(itemData, appState) {
     appState.selectedNutrients.kcal = findNutrientByName(itemData, "Energi (kcal)"); //Find by name due to Energi Kj have same code as kcal, and we want kcal
 
@@ -64,16 +68,20 @@ async function loadFoodCatalogData() {
     }
 }
 
+// Filters foods by term and renders clickable results
 async function searchFoods(term) {
     const appState = window.appState;
     const resultsElement = document.getElementById("results");
     resultsElement.innerHTML = "";
 
     const searchTerm = term.trim().toLowerCase();
+    const searchResults = 30;
 
 
     const results = [];
-    for (let i = 0; i < appState.livsmedelLista.length && results.length < 30; i++) {
+
+    //Limit search results to 30 items
+    for (let i = 0; i < appState.livsmedelLista.length && results.length < searchResults; i++) {
         const item = appState.livsmedelLista[i];
         const itemName = String(item.namn).toLowerCase();
 
@@ -82,8 +90,7 @@ async function searchFoods(term) {
         }
     }
 
-    for (let i = 0; i < results.length; i++) { //Loops through search results and creates a div for each result, 
-        //with an event listener that fetches detailed info about the food item when clicked, and updates the app state and UI accordingly
+    for (let i = 0; i < results.length; i++) {
         const item = results[i];
         const div = document.createElement("div");
         div.className = "resultItem";

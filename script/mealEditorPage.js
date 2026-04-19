@@ -10,6 +10,7 @@ const NUTRIENT_FIELDS = [
     { key: "salt", label: "Salt", elementId: "currentSalt", unit: " g" }
 ];
 
+// Updates a single nutrition preview field
 function setNutritionPreviewText(elementId, label, value, unit) {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -19,6 +20,7 @@ function setNutritionPreviewText(elementId, label, value, unit) {
     element.textContent = `${label}: ${formatValue(value)}${unit || ""}`;
 }
 
+// Removes any saved meal for current day and slot
 function removeCurrentSlotMeal(existingMeals, selectedDay, selectedSlot) {
     const updatedMeals = [];
 
@@ -32,6 +34,7 @@ function removeCurrentSlotMeal(existingMeals, selectedDay, selectedSlot) {
     return updatedMeals;
 }
 
+// Renders nutrient preview for selected grams
 function renderNutritionPreview(grams) {
     const nutrients = window.appState.selectedNutrients;
 
@@ -42,6 +45,7 @@ function renderNutritionPreview(grams) {
     }
 }
 
+// Builds a normalized ingredient object with nutrient values
 function buildIngredient(name, grams, nutrients) {
     const ingredient = {
         name,
@@ -56,7 +60,7 @@ function buildIngredient(name, grams, nutrients) {
     return ingredient;
 }
 
-//Preview of nutrition values based on the current weight input
+// Re renders preview when weight input changes
 function previewWeightInput() {
     const weightInput = document.getElementById("weightInput");
     if (!weightInput) {
@@ -68,7 +72,7 @@ function previewWeightInput() {
         renderNutritionPreview(grams);
     });
 }
-
+// Initializes editor state from query params and storage
 function initializeMealEditor() {
     const appState = window.appState;
     const context = helpers.readMealContextFromQueryParams();
@@ -98,6 +102,7 @@ function initializeMealEditor() {
     helpers.renderIngredientList();
 }
 
+// Adds current selection as an ingredient in the draft meal
 function addSelectedIngredientToMeal() {
     const appState = window.appState;
     const nutrients = appState.selectedNutrients;
@@ -126,6 +131,7 @@ function addSelectedIngredientToMeal() {
     helpers.renderIngredientList();
 }
 
+// Saves the current meal for selected day and slot
 function saveCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
@@ -173,6 +179,7 @@ function saveCurrentMeal() {
     alert("Rätten sparad. Du kan nu gå tillbaka till översikten.");
 }
 
+// Deletes the meal for selected day and slot
 function deleteCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
@@ -192,6 +199,7 @@ function deleteCurrentMeal() {
     alert("Rätten togs bort från denna slot.");
 }
 
+// Hides the selected food panel
 function closeSelectedFoodPanel() {
     const selectedInfo = document.getElementById("selectedInfo");
     if (selectedInfo) {
