@@ -1,5 +1,8 @@
 //Global app state shared across pages and modules.
 //Attached to window so it is available everywhere in the browser runtime.
+const MEAL_STORAGE_KEY = "simpleMealItems";
+window.MEAL_STORAGE_KEY = MEAL_STORAGE_KEY;
+
 window.appState = {
     livsmedelLista: [],
     baseURL: "https://dataportal.livsmedelsverket.se/livsmedel",

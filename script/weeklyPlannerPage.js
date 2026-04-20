@@ -1,4 +1,3 @@
-const MEAL_STORAGE_KEY = window.MEAL_STORAGE_KEY || "simpleMealItems";
 const WEEK_DAYS = [
     { key: "monday", label: "Monday" },
     { key: "tuesday", label: "Tuesday" },
@@ -22,7 +21,7 @@ function buildAddMealPageHref(dayKey, slotKey) {
 
 // Loads planned meals from localStorage
 function loadMealsFromStorage() {
-    const stored = localStorage.getItem(MEAL_STORAGE_KEY);
+    const stored = localStorage.getItem(window.MEAL_STORAGE_KEY);
     if (!stored) {
         console.warn("No meals found in storage");
         return [];

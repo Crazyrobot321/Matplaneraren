@@ -1,6 +1,3 @@
-const MEAL_STORAGE_KEY = "simpleMealItems";
-window.MEAL_STORAGE_KEY = MEAL_STORAGE_KEY;
-
 // Parses numeric input and supports comma decimals
 function parseNumericValue(value) {
     const parsed = Number.parseFloat(String(value).replace(",", "."));
@@ -22,4 +19,12 @@ function scaledValue(nutrient, grams) {
     }
     const baseValue = parseNumericValue(nutrient.varde);
     return (baseValue * grams) / 100;
+}
+
+// Async alert function that returns a promise
+async function alertAsync(message) {
+    return new Promise((resolve) => {
+        alert(message);
+        resolve();
+    });
 }

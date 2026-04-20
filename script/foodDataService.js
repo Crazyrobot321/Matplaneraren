@@ -119,7 +119,7 @@ async function searchFoods(term) {
                 document.getElementById("selectedInfo").classList.remove("hidden");
             } catch (error) {
                 console.error("Failed to load food details:", error);
-                alert("Kunde inte hämta livsmedelsdetaljer just nu. Försök igen.");
+                await alertAsync("Kunde inte hämta livsmedelsdetaljer just nu. Försök igen.");
             }
         });
 

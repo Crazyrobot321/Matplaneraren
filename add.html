@@ -44,7 +44,7 @@
             </div>
 
             <div class="buttonRow">
-                <button type="button" onclick="addSelectedIngredientToMeal()">Lägg till ingrediens</button>
+                <button type="button" id="addIngredientBtn">Lägg till ingrediens</button>
                 <button type="button" onclick="closeSelectedFoodPanel()">Stäng</button>
             </div>
         </section>
@@ -54,8 +54,8 @@
             <ul id="draftIngredientList"></ul>
             <p id="draftNutrition"></p>
             <div class="buttonRow">
-                <button type="button" onclick="saveCurrentMeal()">Spara rätt</button>
-                <button type="button" id="deleteMealButton" class="hidden" onclick="deleteCurrentMeal()">Ta bort rätt</button>
+                <button type="button" id="saveMealBtn">Spara rätt</button>
+                <button type="button" id="deleteMealButton" class="hidden">Ta bort rätt</button>
                 <a class="buttonLink" href="index.html">Klar</a>
             </div>
         </section>

@@ -1,5 +1,3 @@
-const MEAL_STORAGE_KEY = window.MEAL_STORAGE_KEY || "simpleMealItems";
-
 const DAY_LABELS = {
     monday: "Monday",
     tuesday: "Tuesday",
@@ -27,7 +25,7 @@ function readMealContextFromQueryParams() {
 
 // Loads saved meals from localStorage
 function readMealsFromStorage() {
-    const storedItems = localStorage.getItem(MEAL_STORAGE_KEY);
+    const storedItems = localStorage.getItem(window.MEAL_STORAGE_KEY);
     if (!storedItems) {
         return [];
     }
@@ -41,7 +39,7 @@ function readMealsFromStorage() {
 
 // Saves meals to localStorage
 function writeMealsToStorage(items) {
-    localStorage.setItem(MEAL_STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(window.MEAL_STORAGE_KEY, JSON.stringify(items));
 }
 
 // Returns label by key with a fallback
@@ -144,14 +142,14 @@ function calculateNutrientTotals(ingredients) {
 }
 
 // Renders current ingredient list and summary
-function renderIngredientList() {
+async function renderIngredientList() {
     const appState = window.appState;
     const list = document.getElementById("draftIngredientList");
     const nutrition = document.getElementById("draftNutrition");
 
     //If either the list element or the nutrition element is not found in the DOM, exit the function early
     if (!list || !nutrition) {
-        alert("Ett oväntat fel inträffade. Försök att ladda om sidan.");
+        await alertAsync("Ett oväntat fel inträffade. Försök att ladda om sidan.");
         console.log("Render ingredient list failed: ", list, nutrition);
         return;
     }

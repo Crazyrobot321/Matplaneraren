@@ -73,7 +73,7 @@ function previewWeightInput() {
     });
 }
 // Initializes add meal page state from query params and storage
-function initializeAddMealPage() {
+async function initializeAddMealPage() {
     const appState = window.appState;
     const context = helpers.readMealContextFromQueryParams();
     const titleInput = document.getElementById("mealTitleInput");
@@ -99,11 +99,11 @@ function initializeAddMealPage() {
     }
 
     helpers.renderMealContextText();
-    helpers.renderIngredientList();
+    await helpers.renderIngredientList();
 }
 
 // Adds current selection as an ingredient in the draft meal
-function addSelectedIngredientToMeal() {
+async function addSelectedIngredientToMeal() {
     const appState = window.appState;
     const nutrients = appState.selectedNutrients;
     const titleInput = document.getElementById("mealTitleInput");
@@ -113,7 +113,7 @@ function addSelectedIngredientToMeal() {
     const title = titleInput ? titleInput.value.trim() : "";
 
     if (!title) {
-        alert("Sätt en titel på rätten innan du lägger till ingredienser.");
+        await alertAsync("Sätt en titel på rätten innan du lägger till ingredienser.");
         console.log("Attempted to add ingredient without meal title");
         if (titleInput) {
             titleInput.focus();
@@ -121,25 +121,25 @@ function addSelectedIngredientToMeal() {
         return;
     }
     if (!name || Number.isNaN(grams) || grams <= 0 || !nutrients.kcal) {
-        alert("Välj ett livsmedel och ange gram för att lägga till ingrediens.");
+        await alertAsync("Välj ett livsmedel och ange gram för att lägga till ingrediens.");
         console.error("Attempted to add ingredient with invalid values");
         return;
     }
     //Finally add the ingredient to the current meal ingredients list in app state
     appState.currentMealIngredients.push(buildIngredient(name, grams, nutrients));
     console.log("Added a new ingredient to the meal:", name, grams, "g");
-    helpers.renderIngredientList();
+    await helpers.renderIngredientList();
 }
 
 // Saves the current meal for selected day and slot
-function saveCurrentMeal() {
+async function saveCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
     const title = titleInput ? titleInput.value.trim() : "";
     const ingredients = appState.currentMealIngredients || [];
 
     if (!title) {
-        alert("Titel krävs för att spara rätten.");
+        await alertAsync("Titel krävs för att spara rätten.");
         console.log("Attempted to save meal without title");
         if (titleInput) {
             titleInput.focus();
@@ -148,7 +148,7 @@ function saveCurrentMeal() {
     }
 
     if (ingredients.length === 0) {
-        alert("Lägg till minst en ingrediens innan du sparar.");
+        await alertAsync("Lägg till minst en ingrediens innan du sparar.");
         console.error("Attempted to save meal without ingredients");
         return;
     }
@@ -174,13 +174,13 @@ function saveCurrentMeal() {
         titleInput.value = "";
     }
 
-    helpers.renderIngredientList();
+    await helpers.renderIngredientList();
     helpers.setDeleteButtonVisibility(true);
-    alert("Rätten sparad. Du kan nu gå tillbaka till översikten.");
+    await alertAsync("Rätten sparad. Du kan nu gå tillbaka till översikten.");
 }
 
 // Deletes the meal for selected day and slot
-function deleteCurrentMeal() {
+async function deleteCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
     const existingMeals = helpers.readMealsFromStorage();
@@ -194,9 +194,9 @@ function deleteCurrentMeal() {
         titleInput.value = "";
     }
 
-    helpers.renderIngredientList();
+    await helpers.renderIngredientList();
     helpers.setDeleteButtonVisibility(false);
-    alert("Rätten togs bort från denna slot.");
+    await alertAsync("Rätten togs bort från denna slot.");
 }
 
 // Hides the selected food panel
@@ -204,6 +204,30 @@ function closeSelectedFoodPanel() {
     const selectedInfo = document.getElementById("selectedInfo");
     if (selectedInfo) {
         selectedInfo.classList.add("hidden");
+    }
+}
+
+// Sets up event listeners for async button handlers to avoid having onclick attributes in HTML
+function setupEventListeners() {
+    const addIngredientBtn = document.getElementById("addIngredientBtn");
+    if (addIngredientBtn) {
+        addIngredientBtn.addEventListener("click", async function() {
+            await addSelectedIngredientToMeal();
+        });
+    }
+
+    const saveMealBtn = document.getElementById("saveMealBtn");
+    if (saveMealBtn) {
+        saveMealBtn.addEventListener("click", async function() {
+            await saveCurrentMeal();
+        });
+    }
+
+    const deleteMealBtn = document.getElementById("deleteMealButton");
+    if (deleteMealBtn) {
+        deleteMealBtn.addEventListener("click", async function() {
+            await deleteCurrentMeal();
+        });
     }
 }
 
@@ -215,4 +239,7 @@ window.closeSelectedFoodPanel = closeSelectedFoodPanel;
 
 previewWeightInput();
 loadFoodCatalogData();
-initializeAddMealPage();
+setupEventListeners();
+initializeAddMealPage().catch((error) => {
+    console.error("Error initializing add meal page:", error);
+});
