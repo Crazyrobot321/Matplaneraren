@@ -1,4 +1,5 @@
 // Finds first nutrient where a property contains text
+// Helper to search nutrient arrays with flexible property matching
 function findNutrientByProperty(itemData, propertyName, text) {
     for (let i = 0; i < itemData.length; i++) {
         const nutrient = itemData[i];
@@ -12,16 +13,19 @@ function findNutrientByProperty(itemData, propertyName, text) {
 }
 
 // Finds nutrient by name
+// Looks up a specific nutrient value by its name field
 function findNutrientByName(itemData, text) {
     return findNutrientByProperty(itemData, "namn", text);
 }
 
 // Finds nutrient by EuroFIR code
+// Retrieves nutrient data using standardized nutrition codes
 function findNutrientByCode(itemData, code) {
     return findNutrientByProperty(itemData, "euroFIRkod", code);
 }
 
 // Maps selected nutrients from item details to app state
+// Extracts nutrient values from food catalog and stores them for display and calculations
 function assignSelectedNutrients(itemData, appState) {
     appState.selectedNutrients.kcal = findNutrientByName(itemData, "Energi (kcal)"); //Find by name due to Energi Kj have same code as kcal, and we want kcal
 
@@ -40,6 +44,8 @@ function assignSelectedNutrients(itemData, appState) {
     }
 }
 
+// Loads food catalog data from API or local cache
+// Fetches food database with fallback to cached data for offline support
 async function loadFoodCatalogData() {
     const appState = window.appState;
     const saved = localStorage.getItem("livsmedel");
@@ -74,6 +80,7 @@ async function loadFoodCatalogData() {
 }
 
 // Filters foods by term and renders clickable results
+// Performs search on food list and displays selectable results with event handlers
 async function searchFoods(term) {
     const appState = window.appState;
     const resultsElement = document.getElementById("results");

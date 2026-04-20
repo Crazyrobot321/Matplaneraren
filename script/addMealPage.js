@@ -11,6 +11,7 @@ const NUTRIENT_FIELDS = [
 ];
 
 // Updates a single nutrition preview field
+// Keeps the UI in sync with nutritional data so users see values updated in real-time
 function setNutritionPreviewText(elementId, label, value, unit) {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -21,6 +22,7 @@ function setNutritionPreviewText(elementId, label, value, unit) {
 }
 
 // Removes any saved meal for current day and slot
+// Replaces the meal at a specific time slot or clears it before adding a new one
 function removeCurrentSlotMeal(existingMeals, selectedDay, selectedSlot) {
     const updatedMeals = [];
 
@@ -35,6 +37,7 @@ function removeCurrentSlotMeal(existingMeals, selectedDay, selectedSlot) {
 }
 
 // Renders nutrient preview for selected grams
+// Shows users what the nutritional content will be for their selected portion size
 function renderNutritionPreview(grams) {
     const nutrients = window.appState.selectedNutrients;
 
@@ -46,6 +49,7 @@ function renderNutritionPreview(grams) {
 }
 
 // Builds a normalized ingredient object with nutrient values
+// Ensures all ingredients have a consistent structure with pre-calculated nutrients for the selected portion
 function buildIngredient(name, grams, nutrients) {
     const ingredient = {
         name,
@@ -61,6 +65,7 @@ function buildIngredient(name, grams, nutrients) {
 }
 
 // Re renders preview when weight input changes
+// Provides real-time visual feedback as users adjust portion sizes
 function previewWeightInput() {
     const weightInput = document.getElementById("weightInput");
     if (!weightInput) {
@@ -73,6 +78,7 @@ function previewWeightInput() {
     });
 }
 // Initializes add meal page state from query params and storage
+// Restores the user's context and any previously saved meal when they open the page
 async function initializeAddMealPage() {
     const appState = window.appState;
     const context = helpers.readMealContextFromQueryParams();
@@ -103,6 +109,7 @@ async function initializeAddMealPage() {
 }
 
 // Adds current selection as an ingredient in the draft meal
+// Accumulates ingredients for the meal being edited before saving
 async function addSelectedIngredientToMeal() {
     const appState = window.appState;
     const nutrients = appState.selectedNutrients;
@@ -132,6 +139,7 @@ async function addSelectedIngredientToMeal() {
 }
 
 // Saves the current meal for selected day and slot
+// Persists the completed meal to storage so it appears in the weekly planner
 async function saveCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
@@ -180,6 +188,7 @@ async function saveCurrentMeal() {
 }
 
 // Deletes the meal for selected day and slot
+// Allows users to remove meals they no longer want from a specific time slot
 async function deleteCurrentMeal() {
     const appState = window.appState;
     const titleInput = document.getElementById("mealTitleInput");
@@ -200,6 +209,7 @@ async function deleteCurrentMeal() {
 }
 
 // Hides the selected food panel
+// Closes the UI element showing the selected food details
 function closeSelectedFoodPanel() {
     const selectedInfo = document.getElementById("selectedInfo");
     if (selectedInfo) {
@@ -208,6 +218,7 @@ function closeSelectedFoodPanel() {
 }
 
 // Sets up event listeners for async button handlers to avoid having onclick attributes in HTML
+// Registers click handlers for meal management buttons to enable user interactions
 function setupEventListeners() {
     const addIngredientBtn = document.getElementById("addIngredientBtn");
     if (addIngredientBtn) {

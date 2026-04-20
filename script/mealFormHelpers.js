@@ -15,6 +15,7 @@ const SLOT_LABELS = {
     dinner: "Dinner"
 };
 // Reads selected day and slot from URL query params
+// Extracts meal scheduling context passed from the weekly planner page
 function readMealContextFromQueryParams() {
     const query = new URLSearchParams(window.location.search);
     const day = query.get("day");
@@ -24,6 +25,7 @@ function readMealContextFromQueryParams() {
 }
 
 // Loads saved meals from localStorage
+// Retrieves all planned meals with error handling for corrupted storage
 function readMealsFromStorage() {
     const storedItems = localStorage.getItem(window.MEAL_STORAGE_KEY);
     if (!storedItems) {
@@ -38,11 +40,13 @@ function readMealsFromStorage() {
 }
 
 // Saves meals to localStorage
+// Persists meal data so it survives page refreshes and browser sessions
 function writeMealsToStorage(items) {
     localStorage.setItem(window.MEAL_STORAGE_KEY, JSON.stringify(items));
 }
 
 // Returns label by key with a fallback
+// Safely retrieves display text with default fallback if key not found
 function getLabelFromKey(labels, key, fallbackKey) {
     if (labels[key]) {
         return labels[key];
@@ -52,16 +56,19 @@ function getLabelFromKey(labels, key, fallbackKey) {
 }
 
 // Gets a display label for a day key
+// Converts internal day identifier to user-friendly display text
 function getDayLabelFromKey(dayKey) {
     return getLabelFromKey(DAY_LABELS, dayKey, "monday");
 }
 
 // Gets a display label for a slot key
+// Converts meal slot identifier to user-friendly display text
 function getSlotLabelFromKey(slotKey) {
     return getLabelFromKey(SLOT_LABELS, slotKey, "breakfast");
 }
 
 // Normalizes ingredient values to numeric fields
+// Ensures consistent data types and structure for loaded ingredients
 function normalizeMealIngredients(ingredients) {
     if (!Array.isArray(ingredients)) {
         return [];
@@ -94,6 +101,7 @@ function normalizeMealIngredients(ingredients) {
 }
 
 // Finds a meal for a specific day and slot
+// Looks up existing meal to check if slot already has content
 function findMealForDayAndSlot(meals, day, slot) {
     for (let i = 0; i < meals.length; i++) {
         const meal = meals[i];
@@ -106,6 +114,7 @@ function findMealForDayAndSlot(meals, day, slot) {
 }
 
 // Shows or hides the delete meal button
+// Conditionally displays delete option only when a meal exists
 function setDeleteButtonVisibility(show) {
     const deleteButton = document.getElementById("deleteMealButton");
     if (!deleteButton) {
@@ -116,6 +125,7 @@ function setDeleteButtonVisibility(show) {
 }
 
 // Sums nutrient totals for all ingredients
+// Aggregates nutritional values across all ingredients in a meal
 function calculateNutrientTotals(ingredients) {
     const totals = {
         kcal: 0,
@@ -142,6 +152,7 @@ function calculateNutrientTotals(ingredients) {
 }
 
 // Renders current ingredient list and summary
+// Updates UI with current ingredients and displays nutritional totals
 async function renderIngredientList() {
     const appState = window.appState;
     const list = document.getElementById("draftIngredientList");
@@ -178,6 +189,7 @@ async function renderIngredientList() {
 }
 
 // Renders the current day and slot context text
+// Shows user which day and meal time they are currently editing
 function renderMealContextText() {
     const appState = window.appState;
     const contextElement = document.getElementById("mealContext");

@@ -15,11 +15,13 @@ const MEAL_SLOTS = [
 ];
 
 // Builds link to add meal page for one day and slot
+// Generates navigation URL with meal context parameters
 function buildAddMealPageHref(dayKey, slotKey) {
     return `add.html?day=${dayKey}&slot=${slotKey}`;
 }
 
 // Loads planned meals from localStorage
+// Retrieves saved meals for display on weekly planner
 function loadMealsFromStorage() {
     const stored = localStorage.getItem(window.MEAL_STORAGE_KEY);
     if (!stored) {
@@ -38,6 +40,7 @@ function loadMealsFromStorage() {
 }
 
 // Builds the meal card UI for one day
+// Creates DOM elements for a single day with all meal slots
 function buildDayCard(day, mealMap) {
     const card = document.createElement("article");
     card.className = "dayCard";
@@ -81,6 +84,7 @@ function buildDayCard(day, mealMap) {
 }
 
 // Renders weekly board
+// Displays the complete weekly meal planner with all days and meals
 function renderWeeklyMealBoard() {
     const items = loadMealsFromStorage();
     const mealMap = {};
