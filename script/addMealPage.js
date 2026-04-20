@@ -240,6 +240,13 @@ function setupEventListeners() {
             await deleteCurrentMeal();
         });
     }
+
+    const closeBtn = document.getElementById("closeSelectedFoodPanelBtn");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function() {
+            closeSelectedFoodPanel();
+        });
+    }
 }
 
 window.initializeAddMealPage = initializeAddMealPage;
