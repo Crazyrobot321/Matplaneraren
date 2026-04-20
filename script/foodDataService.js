@@ -58,12 +58,17 @@ async function loadFoodCatalogData() {
     // Then attempt to fetch fresh data, but don't clear cache on failure
     try {
         const response = await fetch(`${appState.baseURL}/api/v1/livsmedel?offset=0&limit=3000&sprak=1`);
+        if (!response.ok) {
+            throw new Error(`Food catalog request failed with status ${response.status}`);
+        }
+
         const payload = await response.json();
         appState.livsmedelLista = Array.isArray(payload.livsmedel) ? payload.livsmedel : [];
         localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista)); // Add all livsmedel to local storage for caching
         console.log("Fetched and cached food data");
-    } catch {
+    } catch (error) {
         // Keep cached data if request fails.
+        console.error("Failed to fetch fresh food data:", error);
         console.log("Failed to fetch fresh food data, keeping cached data.");
     }
 }
@@ -97,17 +102,25 @@ async function searchFoods(term) {
         div.textContent = item.namn;
 
         div.addEventListener("click", async function () {
+            try {
+                const itemInfo = await fetch(appState.baseURL + item.links[0].href);
+                if (!itemInfo.ok) {
+                    throw new Error(`Food details request failed with status ${itemInfo.status}`);
+                }
 
-            const itemInfo = await fetch(appState.baseURL + item.links[0].href);
-            const itemData = await itemInfo.json();
+                const itemData = await itemInfo.json();
 
-            assignSelectedNutrients(itemData, appState);
-            appState.selectedName = item.namn;
-            document.getElementById("currentName").textContent = item.namn;
+                assignSelectedNutrients(itemData, appState);
+                appState.selectedName = item.namn;
+                document.getElementById("currentName").textContent = item.namn;
 
-            const grams = parseNumericValue(document.getElementById("weightInput").value);
-            renderNutritionPreview(grams);
-            document.getElementById("selectedInfo").classList.remove("hidden");
+                const grams = parseNumericValue(document.getElementById("weightInput").value);
+                renderNutritionPreview(grams);
+                document.getElementById("selectedInfo").classList.remove("hidden");
+            } catch (error) {
+                console.error("Failed to load food details:", error);
+                alert("Kunde inte hämta livsmedelsdetaljer just nu. Försök igen.");
+            }
         });
 
         resultsElement.appendChild(div);

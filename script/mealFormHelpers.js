@@ -1,4 +1,4 @@
-const MEAL_STORAGE_KEY = "simpleMealItems";
+const MEAL_STORAGE_KEY = window.MEAL_STORAGE_KEY || "simpleMealItems";
 
 const DAY_LABELS = {
     monday: "Monday",
@@ -81,14 +81,14 @@ function normalizeMealIngredients(ingredients) {
 
         normalized.push({
             name,
-            grams: Number(ingredient.grams),
-            kcal: Number(ingredient.kcal),
-            protein: Number(ingredient.protein),
-            sugar: Number(ingredient.sugar),
-            fat: Number(ingredient.fat),
-            carbs: Number(ingredient.carbs),
-            fiber: Number(ingredient.fiber),
-            salt: Number(ingredient.salt)
+            grams: parseNumericValue(ingredient.grams),
+            kcal: parseNumericValue(ingredient.kcal),
+            protein: parseNumericValue(ingredient.protein),
+            sugar: parseNumericValue(ingredient.sugar),
+            fat: parseNumericValue(ingredient.fat),
+            carbs: parseNumericValue(ingredient.carbs),
+            fiber: parseNumericValue(ingredient.fiber),
+            salt: parseNumericValue(ingredient.salt)
         });
     }
 
@@ -131,13 +131,13 @@ function calculateNutrientTotals(ingredients) {
 
     for (let i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
-        totals.kcal += Number(ingredient.kcal);
-        totals.protein += Number(ingredient.protein);
-        totals.sugar += Number(ingredient.sugar);
-        totals.fat += Number(ingredient.fat);
-        totals.carbs += Number(ingredient.carbs);
-        totals.fiber += Number(ingredient.fiber);
-        totals.salt += Number(ingredient.salt);
+        totals.kcal += parseNumericValue(ingredient.kcal);
+        totals.protein += parseNumericValue(ingredient.protein);
+        totals.sugar += parseNumericValue(ingredient.sugar);
+        totals.fat += parseNumericValue(ingredient.fat);
+        totals.carbs += parseNumericValue(ingredient.carbs);
+        totals.fiber += parseNumericValue(ingredient.fiber);
+        totals.salt += parseNumericValue(ingredient.salt);
     }
     console.log("Total nutrition: ", totals);
     return totals;

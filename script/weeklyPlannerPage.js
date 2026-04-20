@@ -1,4 +1,4 @@
-const MEAL_STORAGE_KEY = "simpleMealItems";
+const MEAL_STORAGE_KEY = window.MEAL_STORAGE_KEY || "simpleMealItems";
 const WEEK_DAYS = [
     { key: "monday", label: "Monday" },
     { key: "tuesday", label: "Tuesday" },

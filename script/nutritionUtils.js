@@ -1,3 +1,6 @@
+const MEAL_STORAGE_KEY = "simpleMealItems";
+window.MEAL_STORAGE_KEY = MEAL_STORAGE_KEY;
+
 // Parses numeric input and supports comma decimals
 function parseNumericValue(value) {
     const parsed = Number.parseFloat(String(value).replace(",", "."));
