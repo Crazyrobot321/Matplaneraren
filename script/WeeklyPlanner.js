@@ -14,28 +14,21 @@ const MEAL_SLOTS = [
     { key: "dinner", label: "Dinner" }
 ];
 
-// Loads planned meals from localStorage
-// Retrieves saved meals for display on weekly planner
-function loadMealsFromStorage() {
-    const stored = localStorage.getItem(window.MEAL_STORAGE_KEY);
-    if (!stored) {
-        console.warn("No meals found in storage");
-        return [];
-    }
-
-    try {
-        const parsed = JSON.parse(stored);
-        console.log("Loaded meals from storage: ", parsed);
-        return parsed;
-    } catch {
-        console.error("Error parsing stored meals");
-        return [];
-    }
-}
-
 // Renders weekly board
 function renderWeeklyMealBoard() {
-    const items = loadMealsFromStorage();
+    const stored = localStorage.getItem(window.MEAL_STORAGE_KEY);
+    let items = [];
+    if (!stored) {
+        console.warn("No meals found in storage");
+    } else {
+        try {
+            items = JSON.parse(stored);
+            console.log("Loaded meals from storage: ", items);
+        } catch {
+            console.error("Error parsing stored meals");
+        }
+    }
+
     const weekGrid = document.getElementById("weekGrid");
 
     if (!weekGrid) {
@@ -43,8 +36,9 @@ function renderWeeklyMealBoard() {
     }
 
     weekGrid.innerHTML = "";
-    for (let i = 0; i < WEEK_DAYS.length; i++) {
-        const day = WEEK_DAYS[i];
+    for (let row = 0; row < WEEK_DAYS.length; row++) {
+        //Builds the day card for each day of the week
+        const day = WEEK_DAYS[row];
         const card = document.createElement("article");
         card.className = "dayCard";
 
@@ -55,8 +49,9 @@ function renderWeeklyMealBoard() {
         const mealList = document.createElement("ul");
         mealList.className = "dayList";
 
-        for (let j = 0; j < MEAL_SLOTS.length; j++) {
-            const slot = MEAL_SLOTS[j];
+        for (let col = 0; col < MEAL_SLOTS.length; col++) {
+            //Builds the meal slot for each meal type within the day card
+            const slot = MEAL_SLOTS[col];
             const mealRow = document.createElement("li");
             mealRow.className = "dayRow";
 
@@ -65,6 +60,7 @@ function renderWeeklyMealBoard() {
             mealTypeLabel.textContent = slot.label;
             mealRow.appendChild(mealTypeLabel);
 
+            //Populates meal slot with either existing meal or add link based on stored data
             let mealEntry = null;
             for (let k = 0; k < items.length; k++) {
                 const item = items[k];
@@ -94,12 +90,10 @@ function renderWeeklyMealBoard() {
     }
 }
 
-function setupClearAllMealsButton() {
-    const clearAllMealsButton = document.getElementById("clearAllMealsButton");
-    if (!clearAllMealsButton) {
-        return;
-    }
+renderWeeklyMealBoard();
 
+const clearAllMealsButton = document.getElementById("clearAllMealsButton");
+if (clearAllMealsButton) {
     clearAllMealsButton.addEventListener("click", function () {
         const shouldClear = confirm("Vill du rensa alla sparade maltider?");
         if (!shouldClear) {
@@ -110,6 +104,3 @@ function setupClearAllMealsButton() {
         renderWeeklyMealBoard();
     });
 }
-
-renderWeeklyMealBoard();
-setupClearAllMealsButton();

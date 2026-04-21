@@ -12,7 +12,7 @@ const NUTRIENT_FIELDS = [
 
 // Shows users what the nutritional content will be for their selected portion size
 function renderNutritionPreview(grams) {
-    const nutrients = window.getMealState().selectedNutrients;
+    const nutrients = window.mealState.selectedNutrients;
 
     for (let i = 0; i < NUTRIENT_FIELDS.length; i++) {
         const field = NUTRIENT_FIELDS[i];
@@ -25,21 +25,9 @@ function renderNutritionPreview(grams) {
     }
 }
 
-// Updates nutrition text as user adjust portion sizes
-function previewWeightInput() {
-    const weightInput = document.getElementById("weightInput");
-    if (!weightInput) {
-        return;
-    }
-
-    weightInput.addEventListener("input", function (event) {
-        const grams = parseNumericValue(event.target.value);
-        renderNutritionPreview(grams);
-    });
-}
 // Restores the users data and any previously saved meal when they open the page
 function initializeAddMealPage() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const data = helpers.readMealContextFromQueryParams();
     const titleInput = document.getElementById("mealTitleInput");
 
@@ -61,7 +49,31 @@ function initializeAddMealPage() {
         if (titleInput) {
             titleInput.value = String(existingMeal.title).trim();
         }
-        appState.currentMealIngredients = helpers.normalizeMealIngredients(existingMeal.ingredients);
+        const loadedIngredients = Array.isArray(existingMeal.ingredients) ? existingMeal.ingredients : [];
+        const normalizedIngredients = [];
+
+        for (let i = 0; i < loadedIngredients.length; i++) {
+            const ingredient = loadedIngredients[i];
+            const name = String(ingredient.name).trim();
+
+            if (!name) {
+                continue;
+            }
+
+            normalizedIngredients.push({
+                name,
+                grams: parseNumericValue(ingredient.grams),
+                kcal: parseNumericValue(ingredient.kcal),
+                protein: parseNumericValue(ingredient.protein),
+                sugar: parseNumericValue(ingredient.sugar),
+                fat: parseNumericValue(ingredient.fat),
+                carbs: parseNumericValue(ingredient.carbs),
+                fiber: parseNumericValue(ingredient.fiber),
+                salt: parseNumericValue(ingredient.salt)
+            });
+        }
+
+        appState.currentMealIngredients = normalizedIngredients;
         const deleteButton = document.getElementById("deleteMealButton");
         if (deleteButton) {
             deleteButton.classList.remove("hidden");
@@ -84,7 +96,7 @@ function initializeAddMealPage() {
 // Adds current selection as an ingredient in the draft meal
 // Accumulates ingredients for the meal being edited before saving
 function addSelectedIngredientToMeal() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const nutrients = appState.selectedNutrients;
     const titleInput = document.getElementById("mealTitleInput");
 
@@ -125,7 +137,7 @@ function addSelectedIngredientToMeal() {
 // Saves the current meal for selected day and slot
 // Persists the completed meal to storage so it appears in the weekly planner
 function saveCurrentMeal() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const titleInput = document.getElementById("mealTitleInput");
     const title = titleInput ? titleInput.value.trim() : "";
     const ingredients = appState.currentMealIngredients || [];
@@ -183,7 +195,7 @@ function saveCurrentMeal() {
 // Deletes the meal for selected day and slot
 // Allows users to remove meals they no longer want from a specific time slot
 function deleteCurrentMeal() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const titleInput = document.getElementById("mealTitleInput");
     const existingMeals = helpers.readMealsFromStorage();
     const updatedMeals = [];
@@ -245,7 +257,14 @@ function setupEventListeners() {
     }
 }
 
-previewWeightInput();
+const weightInput = document.getElementById("weightInput");
+if (weightInput) {
+    weightInput.addEventListener("input", function (event) {
+        const grams = parseNumericValue(event.target.value);
+        renderNutritionPreview(grams);
+    });
+}
+
 loadFoodCatalogData();
 setupEventListeners();
 initializeAddMealPage();

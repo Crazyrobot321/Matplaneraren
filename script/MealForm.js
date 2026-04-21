@@ -44,38 +44,6 @@ function writeMealsToStorage(items) {
     localStorage.setItem(window.MEAL_STORAGE_KEY, JSON.stringify(items));
 }
 
-// Ensures consistent data types and structure for loaded ingredients
-function normalizeMealIngredients(ingredients) {
-    if (!Array.isArray(ingredients)) {
-        return [];
-    }
-
-    const normalized = [];
-
-    for (let i = 0; i < ingredients.length; i++) {
-        const ingredient = ingredients[i];
-        const name = String(ingredient.name).trim();
-
-        if (!name) {
-            continue;
-        }
-
-        normalized.push({
-            name,
-            grams: parseNumericValue(ingredient.grams),
-            kcal: parseNumericValue(ingredient.kcal),
-            protein: parseNumericValue(ingredient.protein),
-            sugar: parseNumericValue(ingredient.sugar),
-            fat: parseNumericValue(ingredient.fat),
-            carbs: parseNumericValue(ingredient.carbs),
-            fiber: parseNumericValue(ingredient.fiber),
-            salt: parseNumericValue(ingredient.salt)
-        });
-    }
-
-    return normalized;
-}
-
 // Sums nutrient totals for all ingredients
 // Aggregates nutritional values across all ingredients in a meal
 function calculateNutrientTotals(ingredients) {
@@ -106,7 +74,7 @@ function calculateNutrientTotals(ingredients) {
 // Renders current ingredient list and summary
 // Updates UI with current ingredients and displays nutritional totals
 function renderIngredientList() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const list = document.getElementById("draftIngredientList");
     const nutrition = document.getElementById("draftNutrition");
 
@@ -122,7 +90,7 @@ function renderIngredientList() {
 
     if (ingredients.length === 0) {
         const li = document.createElement("li");
-        li.textContent = "Inga ingredienser tillagda än.";
+        li.textContent = "No ingredients added yet.";
         list.appendChild(li);
         nutrition.textContent = "";
         return;
@@ -136,14 +104,20 @@ function renderIngredientList() {
     }
 
     const totals = calculateNutrientTotals(ingredients);
-    nutrition.textContent = `Summa: ${displayNumber(totals.kcal)} kcal | Protein ${displayNumber(totals.protein)} g | Kolhydrater ${displayNumber(totals.carbs)} g 
-    | Fett ${displayNumber(totals.fat)} g | Fiber ${displayNumber(totals.fiber)} g | Socker ${displayNumber(totals.sugar)} g | Salt ${displayNumber(totals.salt)} g`;
+    nutrition.textContent = `
+    Sum: ${displayNumber(totals.kcal)} kcal 
+    | Protein ${displayNumber(totals.protein)} g 
+    | Carbohydrates ${displayNumber(totals.carbs)} g 
+    | Fat ${displayNumber(totals.fat)} g 
+    | Fiber ${displayNumber(totals.fiber)} g 
+    | Sugar ${displayNumber(totals.sugar)} g 
+    | Salt ${displayNumber(totals.salt)} g`;
 }
 
 // Renders the current day and slot context text
 // Shows user which day and meal time they are currently editing
 function renderMealContextText() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const contextElement = document.getElementById("mealContext");
     if (!contextElement) {
         return;
@@ -151,14 +125,13 @@ function renderMealContextText() {
 
     const dayLabel = DAY_LABELS[appState.selectedDay] || DAY_LABELS.monday;
     const slotLabel = SLOT_LABELS[appState.selectedSlot] || SLOT_LABELS.breakfast;
-    contextElement.textContent = `Du lägger till rätt för ${dayLabel} - ${slotLabel}`;
+    contextElement.textContent = `You are adding a meal to ${dayLabel} - ${slotLabel}`;
 }
 
 window.mealHelpers = {
     readMealsFromStorage,
     writeMealsToStorage,
     readMealContextFromQueryParams,
-    normalizeMealIngredients,
     renderIngredientList,
     renderMealContextText,
     calculateNutrientTotals

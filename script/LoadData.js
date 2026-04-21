@@ -1,42 +1,6 @@
-// Maps selected nutrients from item details to app state
-// Extracts nutrient values from food catalog and stores them for display and calculations
-function assignSelectedNutrients(itemData) {
-    const appState = window.getMealState();
-    appState.selectedNutrients.kcal = null;
-    for (let i = 0; i < itemData.length; i++) {
-        const nutrient = itemData[i];
-        if (String(nutrient.namn).includes("Energi (kcal)")) {
-            appState.selectedNutrients.kcal = nutrient;
-            break;
-        }
-    }
-
-    const nutrientMappings = [
-        { key: "protein", code: "PROT" },
-        { key: "sugar", code: "SUGAR" },
-        { key: "fat", code: "FAT" },
-        { key: "carbs", code: "CHO" },
-        { key: "fiber", code: "FIB" },
-        { key: "salt", code: "NACL" }
-    ];
-
-    for (let i = 0; i < nutrientMappings.length; i++) {
-        const nutrientMap = nutrientMappings[i];
-        appState.selectedNutrients[nutrientMap.key] = null;
-
-        for (let j = 0; j < itemData.length; j++) {
-            const nutrient = itemData[j];
-            if (String(nutrient.euroFIRkod).includes(nutrientMap.code)) {
-                appState.selectedNutrients[nutrientMap.key] = nutrient;
-                break;
-            }
-        }
-    }
-}
-
 // Loads food catalog data from API or local cache
 async function loadFoodCatalogData() {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const saved = localStorage.getItem("livsmedel");
 
     // Try to load cached data from local storage first
@@ -59,7 +23,7 @@ async function loadFoodCatalogData() {
         }
 
         const data = await response.json();
-        appState.livsmedelLista = Array.isArray(data.livsmedel) ? data.livsmedel : [];
+        appState.livsmedelLista = data.livsmedel
         localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista)); // Add all livsmedel to local storage for caching
         console.log("Fetched and cached food data");
     } catch (error) {
@@ -72,7 +36,7 @@ async function loadFoodCatalogData() {
 // Filters foods by term and renders clickable results
 // Performs search on food list and displays selectable results with event handlers
 function searchFoods(term) {
-    const appState = window.getMealState();
+    const appState = window.mealState;
     const resultsElement = document.getElementById("results");
     resultsElement.innerHTML = "";
 
@@ -85,7 +49,7 @@ function searchFoods(term) {
     //Limit search results to 30 items
     for (let i = 0; i < appState.livsmedelLista.length && results.length < searchResults; i++) {
         const item = appState.livsmedelLista[i];
-        const itemName = String(item.namn).toLowerCase();
+        const itemName = String(item.namn).toLowerCase(); //Convert to string  and lowercase
 
         if (itemName.includes(searchTerm)) {
             results.push(item);
@@ -108,8 +72,36 @@ function searchFoods(term) {
                 }
 
                 const itemData = await itemInfo.json();
+                appState.selectedNutrients.kcal = null;
+                for (let j = 0; j < itemData.length; j++) {
+                    const nutrient = itemData[j];
+                    if (String(nutrient.namn).includes("Energi (kcal)")) {
+                        appState.selectedNutrients.kcal = nutrient;
+                        break;
+                    }
+                }
 
-                assignSelectedNutrients(itemData);
+                const nutrientMappings = [
+                    { key: "protein", code: "PROT" },
+                    { key: "sugar", code: "SUGAR" },
+                    { key: "fat", code: "FAT" },
+                    { key: "carbs", code: "CHO" },
+                    { key: "fiber", code: "FIB" },
+                    { key: "salt", code: "NACL" }
+                ];
+
+                for (let j = 0; j < nutrientMappings.length; j++) {
+                    const nutrientMap = nutrientMappings[j];
+                    appState.selectedNutrients[nutrientMap.key] = null;
+
+                    for (let k = 0; k < itemData.length; k++) {
+                        const nutrient = itemData[k];
+                        if (String(nutrient.euroFIRkod).includes(nutrientMap.code)) {
+                            appState.selectedNutrients[nutrientMap.key] = nutrient;
+                            break;
+                        }
+                    }
+                }
                 appState.selectedName = item.namn;
                 document.getElementById("currentName").textContent = item.namn;
 

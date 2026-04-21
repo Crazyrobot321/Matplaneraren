@@ -1,5 +1,5 @@
 const MEAL_STORAGE_KEY = "simpleMealItems";
-window.MEAL_STORAGE_KEY = window.MEAL_STORAGE_KEY || MEAL_STORAGE_KEY;
+window.MEAL_STORAGE_KEY = MEAL_STORAGE_KEY;
 
 function createDefaultMealState() {
     return {
@@ -22,10 +22,4 @@ function createDefaultMealState() {
     };
 }
 
-window.getMealState = window.getMealState || function getMealState() {
-    if (!window.mealState) {
-        window.mealState = createDefaultMealState();
-    }
-
-    return window.mealState;
-};
+window.mealState = createDefaultMealState();
