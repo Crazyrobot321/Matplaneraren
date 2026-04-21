@@ -34,7 +34,6 @@ function loadMealsFromStorage() {
 }
 
 // Renders weekly board
-// Displays the complete weekly meal planner with all days and meals
 function renderWeeklyMealBoard() {
     const items = loadMealsFromStorage();
     const weekGrid = document.getElementById("weekGrid");

@@ -1,7 +1,7 @@
 // Maps selected nutrients from item details to app state
 // Extracts nutrient values from food catalog and stores them for display and calculations
 function assignSelectedNutrients(itemData) {
-    const appState = window.appState;
+    const appState = window.getMealState();
     appState.selectedNutrients.kcal = null;
     for (let i = 0; i < itemData.length; i++) {
         const nutrient = itemData[i];
@@ -35,9 +35,8 @@ function assignSelectedNutrients(itemData) {
 }
 
 // Loads food catalog data from API or local cache
-// Fetches food database with fallback to cached data for offline support
 async function loadFoodCatalogData() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const saved = localStorage.getItem("livsmedel");
 
     // Try to load cached data from local storage first
@@ -73,7 +72,7 @@ async function loadFoodCatalogData() {
 // Filters foods by term and renders clickable results
 // Performs search on food list and displays selectable results with event handlers
 function searchFoods(term) {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const resultsElement = document.getElementById("results");
     resultsElement.innerHTML = "";
 

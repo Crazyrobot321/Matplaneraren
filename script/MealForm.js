@@ -40,7 +40,6 @@ function readMealsFromStorage() {
 }
 
 // Saves meals to localStorage
-// Persists meal data so it survives page refreshes and browser sessions
 function writeMealsToStorage(items) {
     localStorage.setItem(window.MEAL_STORAGE_KEY, JSON.stringify(items));
 }
@@ -77,17 +76,6 @@ function normalizeMealIngredients(ingredients) {
     return normalized;
 }
 
-// Shows or hides the delete meal button
-// Conditionally displays delete option only when a meal exists
-function setDeleteButtonVisibility(show) {
-    const deleteButton = document.getElementById("deleteMealButton");
-    if (!deleteButton) {
-        return;
-    }
-
-    deleteButton.classList.toggle("hidden", !show);
-}
-
 // Sums nutrient totals for all ingredients
 // Aggregates nutritional values across all ingredients in a meal
 function calculateNutrientTotals(ingredients) {
@@ -118,7 +106,7 @@ function calculateNutrientTotals(ingredients) {
 // Renders current ingredient list and summary
 // Updates UI with current ingredients and displays nutritional totals
 function renderIngredientList() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const list = document.getElementById("draftIngredientList");
     const nutrition = document.getElementById("draftNutrition");
 
@@ -155,7 +143,7 @@ function renderIngredientList() {
 // Renders the current day and slot context text
 // Shows user which day and meal time they are currently editing
 function renderMealContextText() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const contextElement = document.getElementById("mealContext");
     if (!contextElement) {
         return;
@@ -171,7 +159,6 @@ window.mealHelpers = {
     writeMealsToStorage,
     readMealContextFromQueryParams,
     normalizeMealIngredients,
-    setDeleteButtonVisibility,
     renderIngredientList,
     renderMealContextText,
     calculateNutrientTotals

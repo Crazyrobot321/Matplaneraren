@@ -10,10 +10,9 @@ const NUTRIENT_FIELDS = [
     { key: "salt", label: "Salt", elementId: "currentSalt", unit: " g" }
 ];
 
-// Renders nutrient preview for selected grams
 // Shows users what the nutritional content will be for their selected portion size
 function renderNutritionPreview(grams) {
-    const nutrients = window.appState.selectedNutrients;
+    const nutrients = window.getMealState().selectedNutrients;
 
     for (let i = 0; i < NUTRIENT_FIELDS.length; i++) {
         const field = NUTRIENT_FIELDS[i];
@@ -26,8 +25,7 @@ function renderNutritionPreview(grams) {
     }
 }
 
-// Re renders preview when weight input changes
-// Provides real-time visual feedback as users adjust portion sizes
+// Updates nutrition text as user adjust portion sizes
 function previewWeightInput() {
     const weightInput = document.getElementById("weightInput");
     if (!weightInput) {
@@ -39,17 +37,16 @@ function previewWeightInput() {
         renderNutritionPreview(grams);
     });
 }
-// Initializes add meal page state from query params and storage
-// Restores the user's context and any previously saved meal when they open the page
+// Restores the users data and any previously saved meal when they open the page
 function initializeAddMealPage() {
-    const appState = window.appState;
-    const context = helpers.readMealContextFromQueryParams();
+    const appState = window.getMealState();
+    const data = helpers.readMealContextFromQueryParams();
     const titleInput = document.getElementById("mealTitleInput");
 
     appState.mealItems = helpers.readMealsFromStorage();
     appState.currentMealIngredients = [];
-    appState.selectedDay = context.day;
-    appState.selectedSlot = context.slot;
+    appState.selectedDay = data.day;
+    appState.selectedSlot = data.slot;
 
     let existingMeal = null;
     for (let i = 0; i < appState.mealItems.length; i++) {
@@ -65,13 +62,19 @@ function initializeAddMealPage() {
             titleInput.value = String(existingMeal.title).trim();
         }
         appState.currentMealIngredients = helpers.normalizeMealIngredients(existingMeal.ingredients);
-        helpers.setDeleteButtonVisibility(true);
+        const deleteButton = document.getElementById("deleteMealButton");
+        if (deleteButton) {
+            deleteButton.classList.remove("hidden");
+        }
     } 
     else {
         if (titleInput) {
             titleInput.value = "";
         }
-        helpers.setDeleteButtonVisibility(false);
+        const deleteButton = document.getElementById("deleteMealButton");
+        if (deleteButton) {
+            deleteButton.classList.add("hidden");
+        }
     }
 
     helpers.renderMealContextText();
@@ -81,7 +84,7 @@ function initializeAddMealPage() {
 // Adds current selection as an ingredient in the draft meal
 // Accumulates ingredients for the meal being edited before saving
 function addSelectedIngredientToMeal() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const nutrients = appState.selectedNutrients;
     const titleInput = document.getElementById("mealTitleInput");
 
@@ -122,7 +125,7 @@ function addSelectedIngredientToMeal() {
 // Saves the current meal for selected day and slot
 // Persists the completed meal to storage so it appears in the weekly planner
 function saveCurrentMeal() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const titleInput = document.getElementById("mealTitleInput");
     const title = titleInput ? titleInput.value.trim() : "";
     const ingredients = appState.currentMealIngredients || [];
@@ -170,14 +173,17 @@ function saveCurrentMeal() {
     }
 
     helpers.renderIngredientList();
-    helpers.setDeleteButtonVisibility(true);
+    const deleteButton = document.getElementById("deleteMealButton");
+    if (deleteButton) {
+        deleteButton.classList.remove("hidden");
+    }
     alert("Rätten sparad. Du kan nu gå tillbaka till översikten.");
 }
 
 // Deletes the meal for selected day and slot
 // Allows users to remove meals they no longer want from a specific time slot
 function deleteCurrentMeal() {
-    const appState = window.appState;
+    const appState = window.getMealState();
     const titleInput = document.getElementById("mealTitleInput");
     const existingMeals = helpers.readMealsFromStorage();
     const updatedMeals = [];
@@ -197,7 +203,10 @@ function deleteCurrentMeal() {
     }
 
     helpers.renderIngredientList();
-    helpers.setDeleteButtonVisibility(false);
+    const deleteButton = document.getElementById("deleteMealButton");
+    if (deleteButton) {
+        deleteButton.classList.add("hidden");
+    }
     alert("Rätten togs bort från denna slot.");
 }
 
