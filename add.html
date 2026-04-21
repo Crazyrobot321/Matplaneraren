@@ -4,27 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lägg till måltid</title>
+    <title>Add a meal</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <main class="container">
         <div class="headerRow">
-            <h1>Lägg till måltid</h1>
+            <h1>Add a meal</h1>
             <a class="plusLink" href="index.html" aria-label="Tillbaka till översikt">←</a>
         </div>
 
         <section class="card">
             <p id="mealContext" class="mealContext"></p>
-            <label for="mealTitleInput">Titel på rätten</label>
-            <input id="mealTitleInput" type="text" placeholder="Exempel: Kycklinggryta">
+            <label for="mealTitleInput">Title of the meal</label>
+            <input id="mealTitleInput" type="text" placeholder="Example: Chicken Stew">
             <p id="mealFormMessage" class="formMessage" aria-live="polite"></p>
         </section>
 
         <section class="card">
-            <label for="searchInput">Sök livsmedel</label>
-            <input id="searchInput" type="text" placeholder="Exempel: kyckling" oninput="searchFoods(this.value)">
+            <label for="searchInput">Search for ingredients</label>
+            <input id="searchInput" type="text" placeholder="Example: chicken">
             <div id="results" class="results"></div>
         </section>
 
@@ -44,8 +44,8 @@
             </div>
 
             <div class="buttonRow">
-                <button type="button" id="addIngredientBtn">Lägg till ingrediens</button>
-                <button type="button" id="closeSelectedFoodPanelBtn">Stäng</button>
+                <button type="button" id="addIngredientBtn">Add Ingredient</button>
+                <button type="button" id="closeSelectedFoodPanelBtn">Close</button>
             </div>
         </section>
 
@@ -54,18 +54,18 @@
             <ul id="draftIngredientList"></ul>
             <p id="draftNutrition"></p>
             <div class="buttonRow">
-                <button type="button" id="saveMealBtn">Spara rätt</button>
-                <button type="button" id="deleteMealButton" class="hidden">Ta bort rätt</button>
-                <a class="buttonLink" href="index.html">Klar</a>
+                <button type="button" id="saveMealBtn">Save Meal</button>
+                <button type="button" id="deleteMealButton" class="hidden">Delete Meal</button>
+                <a class="buttonLink" href="index.html">Done</a>
             </div>
         </section>
     </main>
 
-    <script src="script/MealState.js"></script>
-    <script src="script/NumberFormatting.js"></script>
-    <script src="script/LoadData.js"></script>
-    <script src="script/MealForm.js"></script>
-    <script src="script/AddMeal.js"></script>
+    <script src="script/appState.js"></script>
+    <script src="script/numberUtils.js"></script>
+    <script src="script/foodApi.js"></script>
+    <script src="script/mealHelpers.js"></script>
+    <script src="script/addMealPage.js"></script>
 </body>
 
 </html>

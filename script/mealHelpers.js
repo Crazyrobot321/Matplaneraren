@@ -15,7 +15,6 @@ const SLOT_LABELS = {
     dinner: "Dinner"
 };
 // Reads selected day and slot from URL query params
-// Extracts meal scheduling context passed from the weekly planner page
 function readMealContextFromQueryParams() {
     const query = new URLSearchParams(window.location.search);
     const day = query.get("day");

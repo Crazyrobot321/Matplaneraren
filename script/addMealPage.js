@@ -78,7 +78,7 @@ function initializeAddMealPage() {
         if (deleteButton) {
             deleteButton.classList.remove("hidden");
         }
-    } 
+    }
     else {
         if (titleInput) {
             titleInput.value = "";
@@ -193,7 +193,6 @@ function saveCurrentMeal() {
 }
 
 // Deletes the meal for selected day and slot
-// Allows users to remove meals they no longer want from a specific time slot
 function deleteCurrentMeal() {
     const appState = window.mealState;
     const titleInput = document.getElementById("mealTitleInput");
@@ -222,47 +221,52 @@ function deleteCurrentMeal() {
     alert("Rätten togs bort från denna slot.");
 }
 
-// Sets up event listeners for async button handlers to avoid having onclick attributes in HTML
-// Registers click handlers for meal management buttons to enable user interactions
+// Sets up all necessary event listeners for the add meal page
 function setupEventListeners() {
     const addIngredientBtn = document.getElementById("addIngredientBtn");
     if (addIngredientBtn) {
-        addIngredientBtn.addEventListener("click", function() {
+        addIngredientBtn.addEventListener("click", function () {
             addSelectedIngredientToMeal();
         });
     }
 
     const saveMealBtn = document.getElementById("saveMealBtn");
     if (saveMealBtn) {
-        saveMealBtn.addEventListener("click", function() {
+        saveMealBtn.addEventListener("click", function () {
             saveCurrentMeal();
         });
     }
 
     const deleteMealBtn = document.getElementById("deleteMealButton");
     if (deleteMealBtn) {
-        deleteMealBtn.addEventListener("click", function() {
+        deleteMealBtn.addEventListener("click", function () {
             deleteCurrentMeal();
         });
     }
 
     const closeBtn = document.getElementById("closeSelectedFoodPanelBtn");
     if (closeBtn) {
-        closeBtn.addEventListener("click", function() {
+        closeBtn.addEventListener("click", function () {
             const selectedInfo = document.getElementById("selectedInfo");
             if (selectedInfo) {
                 selectedInfo.classList.add("hidden");
             }
         });
     }
-}
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", function (event) {
+            searchFoods(event.target.value);
+        });
+    }
 
-const weightInput = document.getElementById("weightInput");
-if (weightInput) {
-    weightInput.addEventListener("input", function (event) {
-        const grams = parseNumericValue(event.target.value);
-        renderNutritionPreview(grams);
-    });
+    const weightInput = document.getElementById("weightInput");
+    if (weightInput) {
+        weightInput.addEventListener("input", function (event) {
+            const grams = parseNumericValue(event.target.value);
+            renderNutritionPreview(grams);
+        });
+    }
 }
 
 loadFoodCatalogData();
