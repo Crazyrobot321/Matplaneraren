@@ -5,8 +5,8 @@
 body {
   margin: 0;
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  color: #2f2a2a;
-  background: #ffec8f;
+  color: #e8f2f1;
+  background: linear-gradient(140deg, #172229, #1e2d35);
 }
 
 .container {
@@ -30,10 +30,11 @@ input {
   width: 100%;
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #35bcb5;
+  border: 1px solid #4fa9a2;
   border-radius: 6px;
   font: inherit;
-  background: #ffffff;
+  background: #22343d;
+  color: #e8f2f1;
 }
 
 button,
@@ -45,10 +46,10 @@ button,
   min-width: 38px;
   min-height: 38px;
   padding: 8px 12px;
-  border: 1px solid #35bcb5;
+  border: 1px solid #4fa9a2;
   border-radius: 6px;
-  background: #c6f5f1;
-  color: #2f2a2a;
+  background: #2a5f66;
+  color: #eff8f7;
   text-decoration: none;
   cursor: pointer;
   font: inherit;
@@ -67,12 +68,12 @@ button,
 button:hover,
 .plusLink:hover,
 .buttonLink:hover {
-  background: #ffec8f;
+  background: #36727a;
 }
 
 .mealLink,
 .addMealLink {
-  color: #26484a;
+  color: #8de5dd;
   text-decoration: none;
 }
 

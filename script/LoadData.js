@@ -1,33 +1,15 @@
-// Finds first nutrient where a property contains text
-// Helper to search nutrient arrays with flexible property matching
-function findNutrientByProperty(itemData, propertyName, text) {
-    for (let i = 0; i < itemData.length; i++) {
-        const nutrient = itemData[i];
-        const propertyValue = String(nutrient[propertyName]);
-        if (propertyValue.includes(text)) {
-            return nutrient;
-        }
-    }
-
-    return null;
-}
-
-// Finds nutrient by name
-// Looks up a specific nutrient value by its name field
-function findNutrientByName(itemData, text) {
-    return findNutrientByProperty(itemData, "namn", text);
-}
-
-// Finds nutrient by EuroFIR code
-// Retrieves nutrient data using standardized nutrition codes
-function findNutrientByCode(itemData, code) {
-    return findNutrientByProperty(itemData, "euroFIRkod", code);
-}
-
 // Maps selected nutrients from item details to app state
 // Extracts nutrient values from food catalog and stores them for display and calculations
-function assignSelectedNutrients(itemData, appState) {
-    appState.selectedNutrients.kcal = findNutrientByName(itemData, "Energi (kcal)"); //Find by name due to Energi Kj have same code as kcal, and we want kcal
+function assignSelectedNutrients(itemData) {
+    const appState = window.appState;
+    appState.selectedNutrients.kcal = null;
+    for (let i = 0; i < itemData.length; i++) {
+        const nutrient = itemData[i];
+        if (String(nutrient.namn).includes("Energi (kcal)")) {
+            appState.selectedNutrients.kcal = nutrient;
+            break;
+        }
+    }
 
     const nutrientMappings = [
         { key: "protein", code: "PROT" },
@@ -39,8 +21,16 @@ function assignSelectedNutrients(itemData, appState) {
     ];
 
     for (let i = 0; i < nutrientMappings.length; i++) {
-        const nutrient = nutrientMappings[i];
-        appState.selectedNutrients[nutrient.key] = findNutrientByCode(itemData, nutrient.code);
+        const nutrientMap = nutrientMappings[i];
+        appState.selectedNutrients[nutrientMap.key] = null;
+
+        for (let j = 0; j < itemData.length; j++) {
+            const nutrient = itemData[j];
+            if (String(nutrient.euroFIRkod).includes(nutrientMap.code)) {
+                appState.selectedNutrients[nutrientMap.key] = nutrient;
+                break;
+            }
+        }
     }
 }
 
@@ -63,13 +53,14 @@ async function loadFoodCatalogData() {
     }
     // Then attempt to fetch fresh data, but don't clear cache on failure
     try {
-        const response = await fetch(`${appState.baseURL}/api/v1/livsmedel?offset=0&limit=3000&sprak=1`);
+        const response = await fetch(`${appState.baseURL}/api/v1/livsmedel?offset=0&limit=5000&sprak=1`);
         if (!response.ok) {
-            throw new Error(`Food catalog request failed with status ${response.status}`);
+            console.error(`Food catalog request failed with status ${response.status}`);
+            return;
         }
 
-        const payload = await response.json();
-        appState.livsmedelLista = Array.isArray(payload.livsmedel) ? payload.livsmedel : [];
+        const data = await response.json();
+        appState.livsmedelLista = Array.isArray(data.livsmedel) ? data.livsmedel : [];
         localStorage.setItem("livsmedel", JSON.stringify(appState.livsmedelLista)); // Add all livsmedel to local storage for caching
         console.log("Fetched and cached food data");
     } catch (error) {
@@ -81,7 +72,7 @@ async function loadFoodCatalogData() {
 
 // Filters foods by term and renders clickable results
 // Performs search on food list and displays selectable results with event handlers
-async function searchFoods(term) {
+function searchFoods(term) {
     const appState = window.appState;
     const resultsElement = document.getElementById("results");
     resultsElement.innerHTML = "";
@@ -108,16 +99,18 @@ async function searchFoods(term) {
         div.className = "resultItem";
         div.textContent = item.namn;
 
+        //Assigns each result item a click event to load its details and update the preview
         div.addEventListener("click", async function () {
             try {
                 const itemInfo = await fetch(appState.baseURL + item.links[0].href);
                 if (!itemInfo.ok) {
-                    throw new Error(`Food details request failed with status ${itemInfo.status}`);
+                    console.error("Failed to fetch food details, status: ", itemInfo.status);
+                    return;
                 }
 
                 const itemData = await itemInfo.json();
 
-                assignSelectedNutrients(itemData, appState);
+                assignSelectedNutrients(itemData);
                 appState.selectedName = item.namn;
                 document.getElementById("currentName").textContent = item.namn;
 
@@ -126,7 +119,7 @@ async function searchFoods(term) {
                 document.getElementById("selectedInfo").classList.remove("hidden");
             } catch (error) {
                 console.error("Failed to load food details:", error);
-                await alertAsync("Kunde inte hämta livsmedelsdetaljer just nu. Försök igen.");
+                alert("Kunde inte hämta livsmedelsdetaljer just nu. Försök igen.");
             }
         });
 

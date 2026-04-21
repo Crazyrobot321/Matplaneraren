@@ -45,29 +45,6 @@ function writeMealsToStorage(items) {
     localStorage.setItem(window.MEAL_STORAGE_KEY, JSON.stringify(items));
 }
 
-// Returns label by key with a fallback
-// Safely retrieves display text with default fallback if key not found
-function getLabelFromKey(labels, key, fallbackKey) {
-    if (labels[key]) {
-        return labels[key];
-    }
-
-    return labels[fallbackKey];
-}
-
-// Gets a display label for a day key
-// Converts internal day identifier to user-friendly display text
-function getDayLabelFromKey(dayKey) {
-    return getLabelFromKey(DAY_LABELS, dayKey, "monday");
-}
-
-// Gets a display label for a slot key
-// Converts meal slot identifier to user-friendly display text
-function getSlotLabelFromKey(slotKey) {
-    return getLabelFromKey(SLOT_LABELS, slotKey, "breakfast");
-}
-
-// Normalizes ingredient values to numeric fields
 // Ensures consistent data types and structure for loaded ingredients
 function normalizeMealIngredients(ingredients) {
     if (!Array.isArray(ingredients)) {
@@ -98,19 +75,6 @@ function normalizeMealIngredients(ingredients) {
     }
 
     return normalized;
-}
-
-// Finds a meal for a specific day and slot
-// Looks up existing meal to check if slot already has content
-function findMealForDayAndSlot(meals, day, slot) {
-    for (let i = 0; i < meals.length; i++) {
-        const meal = meals[i];
-        if (meal.day === day && meal.slot === slot) {
-            return meal;
-        }
-    }
-
-    return null;
 }
 
 // Shows or hides the delete meal button
@@ -153,14 +117,14 @@ function calculateNutrientTotals(ingredients) {
 
 // Renders current ingredient list and summary
 // Updates UI with current ingredients and displays nutritional totals
-async function renderIngredientList() {
+function renderIngredientList() {
     const appState = window.appState;
     const list = document.getElementById("draftIngredientList");
     const nutrition = document.getElementById("draftNutrition");
 
     //If either the list element or the nutrition element is not found in the DOM, exit the function early
     if (!list || !nutrition) {
-        await alertAsync("Ett oväntat fel inträffade. Försök att ladda om sidan.");
+        alert("Ett oväntat fel inträffade. Försök att ladda om sidan.");
         console.log("Render ingredient list failed: ", list, nutrition);
         return;
     }
@@ -179,13 +143,13 @@ async function renderIngredientList() {
     for (let i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
         const li = document.createElement("li");
-        li.textContent = `${ingredient.name}, ${formatValue(ingredient.grams)} g, ${formatValue(ingredient.kcal)} kcal`;
+        li.textContent = `${ingredient.name}, ${displayNumber(ingredient.grams)} g, ${displayNumber(ingredient.kcal)} kcal`;
         list.appendChild(li);
     }
 
     const totals = calculateNutrientTotals(ingredients);
-    nutrition.textContent = `Summa: ${formatValue(totals.kcal)} kcal | Protein ${formatValue(totals.protein)} g | Kolhydrater ${formatValue(totals.carbs)} g 
-    | Fett ${formatValue(totals.fat)} g | Fiber ${formatValue(totals.fiber)} g | Socker ${formatValue(totals.sugar)} g | Salt ${formatValue(totals.salt)} g`;
+    nutrition.textContent = `Summa: ${displayNumber(totals.kcal)} kcal | Protein ${displayNumber(totals.protein)} g | Kolhydrater ${displayNumber(totals.carbs)} g 
+    | Fett ${displayNumber(totals.fat)} g | Fiber ${displayNumber(totals.fiber)} g | Socker ${displayNumber(totals.sugar)} g | Salt ${displayNumber(totals.salt)} g`;
 }
 
 // Renders the current day and slot context text
@@ -197,8 +161,8 @@ function renderMealContextText() {
         return;
     }
 
-    const dayLabel = getDayLabelFromKey(appState.selectedDay);
-    const slotLabel = getSlotLabelFromKey(appState.selectedSlot);
+    const dayLabel = DAY_LABELS[appState.selectedDay] || DAY_LABELS.monday;
+    const slotLabel = SLOT_LABELS[appState.selectedSlot] || SLOT_LABELS.breakfast;
     contextElement.textContent = `Du lägger till rätt för ${dayLabel} - ${slotLabel}`;
 }
 
@@ -206,7 +170,6 @@ window.mealHelpers = {
     readMealsFromStorage,
     writeMealsToStorage,
     readMealContextFromQueryParams,
-    findMealForDayAndSlot,
     normalizeMealIngredients,
     setDeleteButtonVisibility,
     renderIngredientList,
